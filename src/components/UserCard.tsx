@@ -7,6 +7,7 @@ import { normalize } from "path";
 import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
 import CustomAvatar from "./CustomAvatar";
 import Link from "next/link";
+import { renderWalletAddress } from "../utils/string";
 
 const UserCard: React.FC = () => {
   const { address } = useAccount();
@@ -28,7 +29,7 @@ const UserCard: React.FC = () => {
     <div className="flex flex-col w-full">
       <div className="flex justify-center items-center bg-primary-gradient-2 py-2 px-3 rounded-t-[24px] gap-1">
         <Flame weight="fill" size={14} />
-        <p className="text-xs font-medium">12 Days</p>
+        <p className="text-xs font-medium">0 Days</p>
         <p className="text-xs">login strike</p>
       </div>
       <div className="flex flex-col bg-zinc-950 rounded-b-[24px] gap-6 p-6">
@@ -39,7 +40,7 @@ const UserCard: React.FC = () => {
               {ensNameResult?.data && (
                 <p className="text-sm font-medium">{ensNameResult.data}</p>
               )}
-              <p className="text-xs text-zinc-400">Ox51ea...8D35</p>
+              <p className="text-xs text-zinc-400">{renderWalletAddress(address)}</p>
             </div>
           </div>
           {/* Will used later */}
@@ -74,17 +75,22 @@ const UserCard: React.FC = () => {
             </div>
           </div> */}
         </div>
-        <div className="flex items-center w-full bg-zinc-900 rounded-xl p-3">
-          <div className="flex flex-col items-center gap-1 w-5/12">
-            <p className="text-xs text-zinc-400">Portfolio</p>
-            <p className="text-sm font-medium">$12,233.21</p>
+        <div className="relative">
+          <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
+            <div className="text-white text-base">Coming soon</div>
           </div>
-          <div className="w-2/12 flex justify-center items-center">
-            <Divider type="vertical" className="!m-0 border-[1px] !h-6 border-zinc-700" />
-          </div>
-          <div className="flex flex-col items-center gap-1 w-5/12">
-            <p className="text-xs text-zinc-400">Profit/loss</p>
-            <p className="text-sm font-medium text-green-500">+$159,092.43</p>
+          <div className="flex items-center w-full bg-zinc-900 rounded-xl p-3 blur-sm">
+            <div className="flex flex-col items-center gap-1 w-5/12">
+              <p className="text-xs text-zinc-400">Portfolio</p>
+              <p className="text-sm font-medium">$12,233.21</p>
+            </div>
+            <div className="w-2/12 flex justify-center items-center">
+              <Divider type="vertical" className="!m-0 border-[1px] !h-6 border-zinc-700" />
+            </div>
+            <div className="flex flex-col items-center gap-1 w-5/12">
+              <p className="text-xs text-zinc-400">Profit/loss</p>
+              <p className="text-sm font-medium text-green-500">$159,092.43</p>
+            </div>
           </div>
         </div>
         <div className="w-full">
