@@ -60,8 +60,6 @@ const MarketListCard: React.FC = ({
     setMarketListData(data);
   }
 
-  console.log('selectedTabIndex', selectedTabIndex);
-
   let listCounter = 0;
 
   return (
