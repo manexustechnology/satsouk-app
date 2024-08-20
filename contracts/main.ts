@@ -295,8 +295,8 @@ export const bettingContractAbi = [
         type: "uint256",
       },
       {
-        internalType: "enum BettingContract.BetResult",
-        name: "result",
+        internalType: "enum BettingContract.BetStatus",
+        name: "status",
         type: "uint8",
       },
       {
@@ -385,8 +385,8 @@ export const bettingContractAbi = [
         type: "uint256",
       },
       {
-        internalType: "enum BettingContract.BetResult",
-        name: "result",
+        internalType: "enum BettingContract.BetStatus",
+        name: "status",
         type: "uint8",
       },
       {

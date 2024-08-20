@@ -7,10 +7,10 @@ contract BettingContract is UsingTellor {
     mapping(address => bool) public admins;
     uint256 public betCounter;
 
-    enum BetResult {
-        PENDING,
-        WON,
-        LOST
+    enum BetStatus {
+        ACTIVE,
+        FINISHED,
+        CANCELED
     }
 
     struct Bet {
@@ -21,7 +21,7 @@ contract BettingContract is UsingTellor {
         uint256 executionTime;
         uint256 expirationDate;
         uint256 id;
-        BetResult result;
+        BetStatus status;
         mapping(string => uint256) options;
         string[] optionKeys;
         mapping(string => Bettor[]) bettors;
@@ -98,7 +98,7 @@ contract BettingContract is UsingTellor {
         newBet.executionTime = _executionTime;
         newBet.expirationDate = _expirationDate;
         newBet.id = betCounter;
-        newBet.result = BetResult.PENDING;
+        newBet.status = BetStatus.ACTIVE;
 
         for (uint256 i = 0; i < _options.length; i++) {
             newBet.options[_options[i]] = 0;
@@ -153,13 +153,13 @@ contract BettingContract is UsingTellor {
             "Bet execution time has not been reached"
         );
         require(
-            bet.result == BetResult.PENDING,
+            bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
         );
 
         // Oracle Logic comes here
 
-        bet.result = BetResult.WON;
+        bet.status = BetStatus.FINISHED;
         distributeRewards(bet, bet.correctAnswer);
 
         emit BetExecuted(_betId, bet.correctAnswer);
@@ -171,16 +171,12 @@ contract BettingContract is UsingTellor {
     ) external onlyAdmin {
         Bet storage bet = bets[_betId];
         require(
-            block.timestamp >= bet.executionTime,
-            "Bet execution time has not been reached"
-        );
-        require(
-            bet.result == BetResult.PENDING,
+            bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
         );
 
         bet.correctAnswer = _correctAnswer;
-        bet.result = BetResult.WON;
+        bet.status = BetStatus.FINISHED;
         distributeRewards(bet, _correctAnswer);
 
         emit BetAdminExecuted(_betId, _correctAnswer);
@@ -197,7 +193,7 @@ contract BettingContract is UsingTellor {
             "Bet execution time has not been reached"
         );
         require(
-            bet.result == BetResult.PENDING,
+            bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
         );
 
@@ -271,7 +267,7 @@ contract BettingContract is UsingTellor {
             uint256 executionTime,
             uint256 expirationDate,
             uint256 id,
-            BetResult result,
+            BetStatus status,
             string[] memory optionKeys,
             uint256[] memory optionAmounts
         )
@@ -289,7 +285,7 @@ contract BettingContract is UsingTellor {
             bet.executionTime,
             bet.expirationDate,
             bet.id,
-            bet.result,
+            bet.status,
             options,
             amounts
         );

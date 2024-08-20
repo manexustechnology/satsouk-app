@@ -18,7 +18,7 @@ const MyPositionItem: React.FC<MyPositionItemProps> = ({ data }) => {
 
   const volumeInUSD = (data.volume || 0) * (price || 0);
   const amountInUSD = (data.amount || 0) * (price || 0);
-  const potentialPrizeInUSD = (data.potentialPrize || 0) * (price || 0);
+  const potentialPrizeInUSD = ((data.potentialPrize || 0) * (price || 0)) - amountInUSD;
 
   return (
     <>

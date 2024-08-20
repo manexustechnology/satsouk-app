@@ -31,7 +31,7 @@ import {
   PlusCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { bettingContractAbi } from "../../../../contracts/main";
 import { parseUnits } from "viem";
@@ -60,6 +60,10 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
     useWaitForTransactionReceipt({
       hash,
     });
+
+  useEffect(() => {
+    setIsSide1(optionSelected === data?.options?.[0]?.label);
+  }, [optionSelected]);
 
   useEffect(() => {
     if (isConfirmed) {
@@ -107,6 +111,20 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
       value: parseUnits(amount.toString(), 18)
     })
   }
+
+  const [potentialReturnInUSD, potentialReturnPercentage] = useMemo(() => {
+    if (amountBuyValue > 0) {
+      const pickSideVolumeInUSD = ((isSide1 ? (data?.options?.[0]?.volume || 0) : (data?.options?.[1]?.volume || 0)) * (price || 0)) + amountBuyValue;
+      const oppositeVolumeInUSD = (isSide1 ? (data?.options?.[1]?.volume || 0) : (data?.options?.[0]?.volume || 0)) * (price || 0);
+      const fee = 0.01; // 1%
+      const oppositeVolumeInUSDWithFee = oppositeVolumeInUSD > 0 ? oppositeVolumeInUSD * (1 - fee) : 0;
+      const potentialReturnInUSD = (amountBuyValue / pickSideVolumeInUSD) * oppositeVolumeInUSDWithFee;
+      const potentialReturnPercentage = (potentialReturnInUSD / amountBuyValue) * 100;
+      return [Number((potentialReturnInUSD || 0).toFixed(2)), Number((potentialReturnPercentage || 0).toFixed(2))];
+    }
+
+    return [0, 0];
+  }, [amountBuyValue, isSide1]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -474,7 +492,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                     </div>
                     <div className=" h-[20px] flex justify-end">
                       <p className="font-normal text-[14px] leading-[20px] text-[#22C55E]">
-                        $0 (0%)
+                        {formatNumberToUSD(potentialReturnInUSD)} ({potentialReturnPercentage}%)
                       </p>
                     </div>
                   </div>
