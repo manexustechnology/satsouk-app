@@ -12,7 +12,7 @@ export const capitalizeWords = (str: string): string => {
 
 export const formatNumber = (value: number): string => {
   if (typeof value !== "number" || isNaN(value) || value < 0) {
-    return "Invalid input";
+    return "N/A";
   }
 
   const suffixes = ["", "k", "m", "b", "t"];
@@ -38,7 +38,7 @@ export const formatNumber = (value: number): string => {
 export const formatNumberToUSD = (value: number): string => {
   const formattedValue = formatNumber(value);
 
-  if (formattedValue === "Invalid input") return formattedValue;
+  if (formattedValue === "N/A") return formattedValue;
 
   return `$${formatNumber(value)}`;
 };

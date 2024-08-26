@@ -36,21 +36,19 @@ const Navbar: React.FC = () => {
     <>
       <div className="fixed w-full h-[74px] bg-zinc-900 z-10 flex justify-center inset-0">
         <div className="w-full h-full max-w-[1238px] py-4 px-3 flex justify-between items-center">
-          <div className="flex gap-8 w-2/3">
-            <Link href="/" className="flex items-center gap-1 w-fit">
-              <Image
-                src='/images/logo-white-colorful.png'
-                alt="logo"
-                height={500}
-                width={1500}
-                sizes="100%"
-                style={{ width: 'auto', height: '100%' }}
-              />
-              <div className="bg-zinc-800 text-xs font-bold leading-4 py-[2px] px-[6px] rounded-[100px]">
-                <span className="bg-primary-gradient bg-clip-text text-transparent">APP</span>
+          <div className="flex w-2/3 gap-4">
+            <Link href="/" className="flex items-center gap-2 w-fit">
+              <div className="w-auto h-full">
+                <img
+                  src='/images/logo-white-colorful.png'
+                  className="h-full w-auto"
+                />
               </div>
+              <span className="bg-zinc-800 text-xs font-bold leading-4 py-[2px] px-[6px] rounded-[100px] w-fit">
+                <span className="bg-primary-gradient bg-clip-text text-transparent">APP</span>
+              </span>
             </Link>
-            <div className="flex justify-start items-center gap-2 w-3/5">
+            <div className="flex items-center gap-2 w-fit">
               <Link href="/" className="flex items-center gap-1 bg-zinc-800 rounded-xl p-3">
                 <SquaresFour weight="bold" size={16} />
                 <p className="text-xs">Markets</p>
