@@ -30,7 +30,7 @@ const UserCard: React.FC = () => {
       <div className="flex justify-center items-center bg-primary-gradient-2 py-2 px-3 rounded-t-[24px] gap-1">
         <Flame weight="fill" size={14} />
         <p className="text-xs font-medium">0 Days</p>
-        <p className="text-xs">login strike</p>
+        <p className="text-xs">login streak</p>
       </div>
       <div className="flex flex-col bg-zinc-950 rounded-b-[24px] gap-6 p-6">
         <div className="flex justify-between items-center">

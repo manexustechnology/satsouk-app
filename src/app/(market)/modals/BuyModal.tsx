@@ -32,9 +32,10 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useBalance, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { bettingContractAbi } from "../../../../contracts/main";
 import { parseUnits } from "viem";
+import { truncateNumber } from "@/utils/number";
 
 interface BuyModalProps {
   isOpen: boolean;
@@ -45,6 +46,11 @@ interface BuyModalProps {
 }
 
 const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data, optionSelected = '' }) => {
+  const { address, isConnected } = useAccount();
+  const { data: balance, isError, isLoading } = useBalance({
+    address: address,
+  });
+
   const { price } = useCrypto();
   const [isSide1, setIsSide1] = useState(true);
   const [amountBuyValue, setAmountBuyValue] = useState(0);
@@ -72,26 +78,10 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
     }
   }, [isConfirmed]);
 
-  const incrementAmountBuyValue = () => {
-    setAmountBuyValue((prev) =>
-      parseFloat((prev + 1).toFixed(1)) <= 10000
-        ? parseFloat((prev + 1).toFixed(1))
-        : 10000
-    );
-  };
-
-  const decrementAmountBuyValue = () => {
-    setAmountBuyValue((prev) =>
-      parseFloat((prev - 1).toFixed(1)) >= 0.1
-        ? parseFloat((prev - 1).toFixed(1))
-        : 0.1
-    );
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+    let value = e.target.value
     if (!isNaN(value)) {
-      setAmountBuyValue(Math.max(0.1, Math.min(10000, value)));
+      setAmountBuyValue(value);
     }
   };
 
@@ -102,7 +92,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
   };
 
   const handleBuyClick = async () => {
-    const amount = Math.ceil((amountBuyValue / (price || 0)) * 1e6) / 1e6;
+    const amount = amountBuyValue;
     placeBet({
       address: bettingContractAddress as `0x${string}`,
       abi: bettingContractAbi,
@@ -114,12 +104,13 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
   const [potentialReturnInUSD, potentialReturnPercentage] = useMemo(() => {
     if (amountBuyValue > 0) {
-      const pickSideVolumeInUSD = ((isSide1 ? (data?.options?.[0]?.volume || 0) : (data?.options?.[1]?.volume || 0)) * (price || 0)) + amountBuyValue;
+      const amountBuyValueInUSD = amountBuyValue * (price || 0);
+      const pickSideVolumeInUSD = ((isSide1 ? (data?.options?.[0]?.volume || 0) : (data?.options?.[1]?.volume || 0)) * (price || 0)) + amountBuyValueInUSD;
       const oppositeVolumeInUSD = (isSide1 ? (data?.options?.[1]?.volume || 0) : (data?.options?.[0]?.volume || 0)) * (price || 0);
       const fee = 0.01; // 1%
       const oppositeVolumeInUSDWithFee = oppositeVolumeInUSD > 0 ? oppositeVolumeInUSD * (1 - fee) : 0;
-      const potentialReturnInUSD = (amountBuyValue / pickSideVolumeInUSD) * oppositeVolumeInUSDWithFee;
-      const potentialReturnPercentage = (potentialReturnInUSD / amountBuyValue) * 100;
+      const potentialReturnInUSD = (amountBuyValueInUSD / pickSideVolumeInUSD) * oppositeVolumeInUSDWithFee;
+      const potentialReturnPercentage = (potentialReturnInUSD / amountBuyValueInUSD) * 100;
       return [Number((potentialReturnInUSD || 0).toFixed(2)), Number((potentialReturnPercentage || 0).toFixed(2))];
     }
 
@@ -424,10 +415,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                   {/* Label */}
                   <div className="flex justify-between items-center w-full">
                     <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
-                      Amount ($)
-                    </p>
-                    <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
-                      {Math.ceil((amountBuyValue / (price || 0)) * 1e6) / 1e6} ETH
+                      Amount
                     </p>
                   </div>
 
@@ -435,41 +423,38 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                   <Flex
                     backgroundColor="#09090B"
                     direction="row"
-                    align="center"
                     p={0}
                     gap="1.5"
                     w="100%"
                     h="40px"
                     rounded="12px"
                   >
-                    {/* Minus Button */}
-                    <div className="ml-[20px]">
-                      <MinusCircle
-                        color="#52525B"
-                        weight="fill"
-                        size={20}
-                        onClick={decrementAmountBuyValue}
-                      ></MinusCircle>
-                    </div>
-
                     {/* Input Field */}
                     <input
                       type="number"
                       value={amountBuyValue}
                       onChange={handleInputChange}
-                      className="w-full h-10 bg-[#09090B] rounded-lg text-[#A1A1AA] text-sm text-center border-none focus:outline-none"
+                      className="w-full h-10 bg-[#09090B] rounded-lg text-[#A1A1AA] text-sm border-none focus:outline-none p-4"
                     />
 
-                    {/* Plus Button */}
-                    <div className="mr-[20px]">
-                      <PlusCircle
-                        color="#52525B"
-                        weight="fill"
-                        size={20}
-                        onClick={incrementAmountBuyValue}
-                      ></PlusCircle>
+                    {/* Symbol */}
+                    <div className="px-3 rounded-r-lg bg-[#52525B] text-sm flex justify-center items-center">
+                      <span>ETH</span>
                     </div>
                   </Flex>
+
+                  <div className="flex justify-between items-center w-full">
+                    <p className="font-normal text-[12px] leading-[20px] text-[#A1A1AA]">
+                      ${Number(amountBuyValue * (price || 0)).toFixed(2)}
+                    </p>
+                    <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
+                      {isConnected && (
+                        <>
+                          <span className="text-white">Balance:</span> {Number(truncateNumber(Number(balance?.formatted || 0), 3)).toFixed(3)} {balance?.symbol}
+                        </>
+                      )}
+                    </p>
+                  </div>
                 </Flex>
 
                 <Box
