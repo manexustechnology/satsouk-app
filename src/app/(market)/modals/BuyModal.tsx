@@ -53,7 +53,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
   const { price } = useCrypto();
   const [isSide1, setIsSide1] = useState(true);
-  const [amountBuyValue, setAmountBuyValue] = useState(0);
+  const [amountBuyValue, setAmountBuyValue] = useState<string>('0');
 
   const {
     data: hash,
@@ -80,9 +80,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
-    if (!isNaN(value)) {
-      setAmountBuyValue(value);
-    }
+    setAmountBuyValue(value);
   };
 
   const [isFilled, setIsFilled] = useState(false);
@@ -92,7 +90,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
   };
 
   const handleBuyClick = async () => {
-    const amount = amountBuyValue;
+    const amount = Number(amountBuyValue);
     placeBet({
       address: bettingContractAddress as `0x${string}`,
       abi: bettingContractAbi,
@@ -103,8 +101,9 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
   }
 
   const [potentialReturnInUSD, potentialReturnPercentage] = useMemo(() => {
-    if (amountBuyValue > 0) {
-      const amountBuyValueInUSD = amountBuyValue * (price || 0);
+    const amount = Number(amountBuyValue);
+    if (amount > 0) {
+      const amountBuyValueInUSD = amount * (price || 0);
       const pickSideVolumeInUSD = ((isSide1 ? (data?.options?.[0]?.volume || 0) : (data?.options?.[1]?.volume || 0)) * (price || 0)) + amountBuyValueInUSD;
       const oppositeVolumeInUSD = (isSide1 ? (data?.options?.[1]?.volume || 0) : (data?.options?.[0]?.volume || 0)) * (price || 0);
       const fee = 0.01; // 1%
@@ -445,7 +444,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
                   <div className="flex justify-between items-center w-full">
                     <p className="font-normal text-[12px] leading-[20px] text-[#A1A1AA]">
-                      ${Number(amountBuyValue * (price || 0)).toFixed(2)}
+                      ${(Number(amountBuyValue) * (price || 0)).toFixed(2)}
                     </p>
                     <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
                       {isConnected && (
