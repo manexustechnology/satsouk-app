@@ -27,11 +27,13 @@ contract BettingContract is UsingTellor {
         mapping(string => Bettor[]) bettors;
         string correctAnswer;
         string oracleAnswer;
+        string predictionType;
     }
 
     struct Bettor {
         address bettor;
         uint256 amount;
+        uint256 datePurchased;
     }
 
     struct UserBet {
@@ -49,7 +51,8 @@ contract BettingContract is UsingTellor {
         string picture,
         string category,
         uint256 executionTime,
-        string[] options
+        string[] options,
+        string predictionType
     );
     event BetPlaced(uint256 id, address bettor, string option, uint256 value);
     event BetExecuted(uint256 id, string correctAnswer);
@@ -57,6 +60,8 @@ contract BettingContract is UsingTellor {
     event AdminAdded(address indexed newAdmin);
     event AdminRemoved(address indexed removedAdmin);
     event OracleAnswerRetrieved(uint256 betId, string oracleAnswer);
+    event BetCanceled(uint256 id);
+    event Withdrawal(uint256 amount, address walletAddress);
 
     constructor(address payable _tellorAddress) UsingTellor(_tellorAddress) {
         admins[msg.sender] = true;
@@ -80,6 +85,19 @@ contract BettingContract is UsingTellor {
         emit AdminRemoved(_admin);
     }
 
+    function withdraw(uint256 amount) external onlyAdmin {
+        require(amount > 0, "Amount must be greater than 0");
+        require(
+            address(this).balance >= amount,
+            "Insufficient balance in contract"
+        );
+
+        // Transfer the specified amount to the admin
+        payable(msg.sender).transfer(amount);
+
+        emit Withdrawal(amount, msg.sender);
+    }
+
     function registerBet(
         string memory _title,
         string memory _category,
@@ -87,7 +105,8 @@ contract BettingContract is UsingTellor {
         string memory _picture,
         uint256 _executionTime,
         uint256 _expirationDate,
-        string[] memory _options
+        string[] memory _options,
+        string memory _predictionType
     ) external onlyAdmin {
         betCounter++;
         Bet storage newBet = bets[betCounter];
@@ -99,6 +118,7 @@ contract BettingContract is UsingTellor {
         newBet.expirationDate = _expirationDate;
         newBet.id = betCounter;
         newBet.status = BetStatus.ACTIVE;
+        newBet.predictionType = _predictionType;
 
         for (uint256 i = 0; i < _options.length; i++) {
             newBet.options[_options[i]] = 0;
@@ -112,14 +132,15 @@ contract BettingContract is UsingTellor {
             _picture,
             _category,
             _executionTime,
-            _options
+            _options,
+            _predictionType
         );
     }
 
     function placeBet(uint256 _betId, string memory _option) external payable {
         Bet storage bet = bets[_betId];
         require(
-            block.timestamp < bet.executionTime,
+            block.timestamp < bet.expirationDate,
             "Betting on this event has expired"
         );
 
@@ -141,17 +162,37 @@ contract BettingContract is UsingTellor {
         require(available, "Invalid option");
 
         bet.options[_option] += msg.value;
-        bet.bettors[_option].push(Bettor(msg.sender, msg.value));
+        bet.bettors[_option].push(
+            Bettor(msg.sender, msg.value, block.timestamp)
+        );
 
         emit BetPlaced(_betId, msg.sender, _option, msg.value);
     }
 
+    function cancelBet(uint256 _betId) external onlyAdmin {
+        Bet storage bet = bets[_betId];
+        require(bet.status == BetStatus.ACTIVE, "Bet is not active");
+
+        // Return the initial investments to the bettors
+        for (uint256 i = 0; i < bet.optionKeys.length; i++) {
+            string memory option = bet.optionKeys[i];
+            Bettor[] storage optionBettors = bet.bettors[option];
+
+            for (uint256 j = 0; j < optionBettors.length; j++) {
+                payable(optionBettors[j].bettor).transfer(
+                    optionBettors[j].amount
+                );
+            }
+        }
+
+        // Set the bet status to CANCELED
+        bet.status = BetStatus.CANCELED;
+
+        emit BetCanceled(_betId);
+    }
+
     function executeBet(uint256 _betId) external onlyAdmin {
         Bet storage bet = bets[_betId];
-        require(
-            block.timestamp >= bet.executionTime,
-            "Bet execution time has not been reached"
-        );
         require(
             bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
@@ -188,10 +229,6 @@ contract BettingContract is UsingTellor {
         bytes[] memory extra_args
     ) external onlyAdmin {
         Bet storage bet = bets[_betId];
-        require(
-            block.timestamp >= bet.executionTime,
-            "Bet execution time has not been reached"
-        );
         require(
             bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
@@ -269,7 +306,8 @@ contract BettingContract is UsingTellor {
             uint256 id,
             BetStatus status,
             string[] memory optionKeys,
-            uint256[] memory optionAmounts
+            uint256[] memory optionAmounts,
+            string memory predictionType
         )
     {
         Bet storage bet = bets[_betId];
@@ -287,7 +325,8 @@ contract BettingContract is UsingTellor {
             bet.id,
             bet.status,
             options,
-            amounts
+            amounts,
+            bet.predictionType
         );
     }
 
@@ -343,13 +382,20 @@ contract BettingContract is UsingTellor {
                 string memory option = bet.optionKeys[j];
                 Bettor[] storage bettors = bet.bettors[option];
 
+                // Calculate Volume
+                (, uint256[] memory amounts) = getOptionsWithAmounts(betId);
+                uint256 volume = 0;
+                for (uint256 k = 0; k < amounts.length; k++) {
+                    volume += amounts[k];
+                }
+                
                 for (uint256 k = 0; k < bettors.length; k++) {
                     if (bettors[k].bettor == _user) {
                         userBets[betIndex] = UserBetPosition({
                             id: betId,
                             image: bet.picture,
                             title: bet.title,
-                            datePurchased: block.timestamp, // Set to current block timestamp or actual purchase time
+                            datePurchased: bettors[k].datePurchased, // Set to current block timestamp or actual purchase time
                             volume: bettors[k].amount, // Assuming volume is the amount of ETH staked
                             position: option,
                             amount: bettors[k].amount,
