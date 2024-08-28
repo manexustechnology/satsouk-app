@@ -4,15 +4,27 @@ import { CaretRight, Flame, Wallet } from "@phosphor-icons/react/dist/ssr";
 import { Divider } from "antd";
 import Image from "next/image";
 import { normalize } from "path";
-import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
+import { useAccount, useBalance, useEnsAvatar, useEnsName } from "wagmi";
 import CustomAvatar from "./CustomAvatar";
 import Link from "next/link";
 import { renderWalletAddress } from "../utils/string";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { truncateNumber } from "@/utils/number";
+import { useState } from "react";
+import { IMyPositionDataItem } from "@/types/my-position";
+import { getMyPositionList } from "@/contract-call/market";
+import { useCrypto } from "@/context/CryptoContext";
 
 const UserCard: React.FC = () => {
-  const { address } = useAccount();
+  const { price } = useCrypto();
+  const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
+  const { address, isConnected } = useAccount();
   const ensNameResult = useEnsName({
     address,
+  });
+
+  const { data: balance, isError, isLoading } = useBalance({
+    address: address,
   });
 
   let ensImage: string | undefined = undefined;
@@ -22,6 +34,11 @@ const UserCard: React.FC = () => {
   })
   if (result && result.data) {
     ensImage = result.data;
+  }
+
+  const fetchMyPositionList = async () => {
+    const data = await getMyPositionList(address as any);
+    setMyPositionListData(data);
   }
 
 
@@ -41,6 +58,13 @@ const UserCard: React.FC = () => {
                 <p className="text-sm font-medium">{ensNameResult.data}</p>
               )}
               <p className="text-xs text-zinc-400">{renderWalletAddress(address)}</p>
+              <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
+                {isConnected && (
+                  <>
+                    <span className="text-white">Balance:</span> {Number(truncateNumber(Number(balance?.formatted || 0), 3)).toFixed(3)} {balance?.symbol}
+                  </>
+                )}
+              </p>
             </div>
           </div>
           {/* Will used later */}
@@ -76,20 +100,36 @@ const UserCard: React.FC = () => {
           </div> */}
         </div>
         <div className="relative">
-          <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
+          {/* <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10">
             <div className="text-white text-base">Coming soon</div>
-          </div>
-          <div className="flex items-center w-full bg-zinc-900 rounded-xl p-3 blur-sm">
+          </div> */}
+          <div className="flex items-center w-full bg-zinc-900 rounded-xl p-3">
             <div className="flex flex-col items-center gap-1 w-5/12">
-              <p className="text-xs text-zinc-400">Portfolio</p>
-              <p className="text-sm font-medium">$12,233.21</p>
+              <p className="text-xs text-zinc-400">Position Amount</p>
+              {myPositionListData.length > 0 ? (
+                <>
+                  <p className="text-sm font-medium">{myPositionListData.map((item) => (item.amount || 0) * (price || 0)).reduce((sum, currentValue) => sum + currentValue, 0)}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium">$0</p>
+                </>
+              )}
             </div>
             <div className="w-2/12 flex justify-center items-center">
               <Divider type="vertical" className="!m-0 border-[1px] !h-6 border-zinc-700" />
             </div>
             <div className="flex flex-col items-center gap-1 w-5/12">
-              <p className="text-xs text-zinc-400">Profit/loss</p>
-              <p className="text-sm font-medium text-green-500">$159,092.43</p>
+              <p className="text-xs text-zinc-400">Potential Prize</p>
+              {myPositionListData.length > 0 ? (
+                <>
+                  <p className="text-sm font-medium text-green-500">{myPositionListData.map((item) => ((item.potentialPrize || 0) * (price || 0)) - ((item.amount || 0) * (price || 0))).reduce((sum, currentValue) => sum + currentValue, 0)}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-green-500">$0</p>
+                </>
+              )}
             </div>
           </div>
         </div>
