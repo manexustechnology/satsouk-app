@@ -1,699 +1,753 @@
 export const bettingContractAbi = [
   {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_tellorAddress",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
-      }
+        indexed: true,
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
     ],
-    "name": "AdminAdded",
-    "type": "event"
+    name: "AdminAdded",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "removedAdmin",
-        "type": "address"
-      }
+        indexed: true,
+        internalType: "address",
+        name: "removedAdmin",
+        type: "address",
+      },
     ],
-    "name": "AdminRemoved",
-    "type": "event"
+    name: "AdminRemoved",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "correctAnswer",
-        "type": "string"
-      }
+        indexed: false,
+        internalType: "string",
+        name: "correctAnswer",
+        type: "string",
+      },
     ],
-    "name": "BetAdminExecuted",
-    "type": "event"
+    name: "BetAdminExecuted",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
     ],
-    "name": "BetCanceled",
-    "type": "event"
+    name: "BetCanceled",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "correctAnswer",
-        "type": "string"
-      }
+        indexed: false,
+        internalType: "string",
+        name: "correctAnswer",
+        type: "string",
+      },
     ],
-    "name": "BetExecuted",
-    "type": "event"
+    name: "BetOraclePredictionExecuted",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "bettor",
-        "type": "address"
+        indexed: false,
+        internalType: "address",
+        name: "bettor",
+        type: "address",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "option",
-        "type": "string"
+        indexed: false,
+        internalType: "string",
+        name: "option",
+        type: "string",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
-    "name": "BetPlaced",
-    "type": "event"
+    name: "BetPlaced",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
+        indexed: false,
+        internalType: "string",
+        name: "title",
+        type: "string",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "picture",
-        "type": "string"
+        indexed: false,
+        internalType: "string",
+        name: "picture",
+        type: "string",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "category",
-        "type": "string"
+        indexed: false,
+        internalType: "string",
+        name: "category",
+        type: "string",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "executionTime",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "executionTime",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "string[]",
-        "name": "options",
-        "type": "string[]"
+        indexed: false,
+        internalType: "string[]",
+        name: "options",
+        type: "string[]",
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "predictionType",
-        "type": "string"
-      }
+        indexed: false,
+        internalType: "string",
+        name: "predictionType",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "predictionValue",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "_isGreaterQuestion",
+        type: "bool",
+      },
     ],
-    "name": "BetRegistered",
-    "type": "event"
+    name: "BetRegistered",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "betId",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "oracleAnswer",
-        "type": "string"
-      }
     ],
-    "name": "OracleAnswerRetrieved",
-    "type": "event"
+    name: "ChangeFeePercentage",
+    type: "event",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "walletAddress",
-        "type": "address"
-      }
+        indexed: false,
+        internalType: "address",
+        name: "walletAddress",
+        type: "address",
+      },
     ],
-    "name": "Withdrawal",
-    "type": "event"
+    name: "Withdrawal",
+    type: "event",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_newAdmin",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "_newAdmin",
+        type: "address",
+      },
     ],
-    "name": "addAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "addAdmin",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
       },
       {
-        "internalType": "string",
-        "name": "_correctAnswer",
-        "type": "string"
-      }
+        internalType: "string",
+        name: "_correctAnswer",
+        type: "string",
+      },
     ],
-    "name": "adminExecuteBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "adminExecuteBet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "admins",
-    "outputs": [
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
+      },
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
+        internalType: "address",
+        name: "_proxy",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    name: "adminExecuteOraclePredictionBet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "betCounter",
-    "outputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    name: "admins",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [],
+    name: "betCounter",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "name": "betIds",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "name": "bets",
-    "outputs": [
+    name: "betIds",
+    outputs: [
       {
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
-      {
-        "internalType": "string",
-        "name": "category",
-        "type": "string"
-      },
-      {
-        "internalType": "bool",
-        "name": "isAIPick",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "picture",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "executionTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expirationDate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum BettingContract.BetStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "correctAnswer",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "oracleAnswer",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "predictionType",
-        "type": "string"
-      }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "name": "cancelBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "bets",
+    outputs: [
+      {
+        internalType: "string",
+        name: "title",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "isAIPick",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "picture",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "executionTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "expirationDate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "enum BettingContract.BetStatus",
+        name: "status",
+        type: "uint8",
+      },
+      {
+        internalType: "string",
+        name: "correctAnswer",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "oracleValue",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "predictionType",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "predictionValue",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isGreaterQuestion",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
+      },
     ],
-    "name": "executeBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "cancelBet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "getAllBetIds",
-    "outputs": [
+    inputs: [],
+    name: "feePercentage",
+    outputs: [
       {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [],
+    name: "getAllBetIds",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
-      }
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
     ],
-    "name": "getBetDetails",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "category",
-        "type": "string"
-      },
-      {
-        "internalType": "bool",
-        "name": "isAIPick",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "picture",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "executionTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expirationDate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum BettingContract.BetStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "internalType": "string[]",
-        "name": "optionKeys",
-        "type": "string[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "optionAmounts",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "string",
-        "name": "predictionType",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
+      },
     ],
-    "name": "getOptionsWithAmounts",
-    "outputs": [
+    name: "getBetDetails",
+    outputs: [
       {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
+        internalType: "string",
+        name: "title",
+        type: "string",
       },
       {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
+        internalType: "string",
+        name: "category",
+        type: "string",
       },
       {
-        "internalType": "string",
-        "name": "main_arg",
-        "type": "string"
+        internalType: "bool",
+        name: "isAIPick",
+        type: "bool",
       },
       {
-        "internalType": "bytes[]",
-        "name": "extra_args",
-        "type": "bytes[]"
-      }
+        internalType: "string",
+        name: "picture",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "executionTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "expirationDate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "enum BettingContract.BetStatus",
+        name: "status",
+        type: "uint8",
+      },
+      {
+        internalType: "string[]",
+        name: "optionKeys",
+        type: "string[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "optionAmounts",
+        type: "uint256[]",
+      },
+      {
+        internalType: "string",
+        name: "predictionType",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "predictionValue",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "oracleValue",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isGreaterQuestion",
+        type: "bool",
+      },
     ],
-    "name": "getOracleAnswer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
+      },
     ],
-    "name": "getTotalBetsOfUser",
-    "outputs": [
+    name: "getOptionsWithAmounts",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "_user",
+        type: "address",
+      },
     ],
-    "name": "getUserBets",
-    "outputs": [
+    name: "getTotalBetsOfUser",
+    outputs: [
       {
-        "components": [
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_user",
+        type: "address",
+      },
+    ],
+    name: "getUserBets",
+    outputs: [
+      {
+        components: [
           {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
           },
           {
-            "internalType": "string",
-            "name": "image",
-            "type": "string"
+            internalType: "string",
+            name: "image",
+            type: "string",
           },
           {
-            "internalType": "string",
-            "name": "title",
-            "type": "string"
+            internalType: "string",
+            name: "title",
+            type: "string",
           },
           {
-            "internalType": "uint256",
-            "name": "datePurchased",
-            "type": "uint256"
+            internalType: "uint256",
+            name: "datePurchased",
+            type: "uint256",
           },
           {
-            "internalType": "uint256",
-            "name": "volume",
-            "type": "uint256"
+            internalType: "uint256",
+            name: "volume",
+            type: "uint256",
           },
           {
-            "internalType": "string",
-            "name": "position",
-            "type": "string"
+            internalType: "string",
+            name: "position",
+            type: "string",
           },
           {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
           },
           {
-            "internalType": "uint256",
-            "name": "potentialPrize",
-            "type": "uint256"
-          }
+            internalType: "uint256",
+            name: "potentialPrize",
+            type: "uint256",
+          },
         ],
-        "internalType": "struct BettingContract.UserBetPosition[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct BettingContract.UserBetPosition[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "_betId",
-        "type": "uint256"
+        internalType: "uint256",
+        name: "_betId",
+        type: "uint256",
       },
       {
-        "internalType": "string",
-        "name": "_option",
-        "type": "string"
-      }
+        internalType: "string",
+        name: "_option",
+        type: "string",
+      },
     ],
-    "name": "placeBet",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    name: "placeBet",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "string",
-        "name": "_title",
-        "type": "string"
+        internalType: "address",
+        name: "proxy",
+        type: "address",
       },
-      {
-        "internalType": "string",
-        "name": "_category",
-        "type": "string"
-      },
-      {
-        "internalType": "bool",
-        "name": "_isAIPick",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "_picture",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_executionTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_expirationDate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string[]",
-        "name": "_options",
-        "type": "string[]"
-      },
-      {
-        "internalType": "string",
-        "name": "_predictionType",
-        "type": "string"
-      }
     ],
-    "name": "registerBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "readOraclePriceDataFeed",
+    outputs: [
+      {
+        internalType: "int224",
+        name: "value",
+        type: "int224",
+      },
+      {
+        internalType: "uint32",
+        name: "timestamp",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_admin",
-        "type": "address"
-      }
+        internalType: "string",
+        name: "_title",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_category",
+        type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "_isAIPick",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "_picture",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_executionTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_expirationDate",
+        type: "uint256",
+      },
+      {
+        internalType: "string[]",
+        name: "_options",
+        type: "string[]",
+      },
+      {
+        internalType: "string",
+        name: "_predictionType",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_predictionValue",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_isGreaterQuestion",
+        type: "bool",
+      },
     ],
-    "name": "removeAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: "registerBet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [],
-    "name": "tellor",
-    "outputs": [
+    inputs: [
       {
-        "internalType": "contract ITellor",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "_admin",
+        type: "address",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    name: "removeAdmin",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    name: "setFeePercentage",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;

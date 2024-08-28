@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import "usingtellor/contracts/UsingTellor.sol";
+import "@api3/contracts/api3-server-v1/proxies/interfaces/IProxy.sol";
 
-contract BettingContract is UsingTellor {
+contract BettingContract {
     mapping(address => bool) public admins;
     uint256 public betCounter;
+    uint256 public feePercentage = 1; // in percent (%)
 
     enum BetStatus {
         ACTIVE,
@@ -26,8 +27,10 @@ contract BettingContract is UsingTellor {
         string[] optionKeys;
         mapping(string => Bettor[]) bettors;
         string correctAnswer;
-        string oracleAnswer;
+        uint256 oracleValue;
         string predictionType;
+        uint256 predictionValue;
+        bool isGreaterQuestion;
     }
 
     struct Bettor {
@@ -52,18 +55,20 @@ contract BettingContract is UsingTellor {
         string category,
         uint256 executionTime,
         string[] options,
-        string predictionType
+        string predictionType,
+        uint256 predictionValue,
+        bool _isGreaterQuestion
     );
     event BetPlaced(uint256 id, address bettor, string option, uint256 value);
-    event BetExecuted(uint256 id, string correctAnswer);
     event BetAdminExecuted(uint256 id, string correctAnswer);
+    event BetOraclePredictionExecuted(uint256 id, string correctAnswer);
     event AdminAdded(address indexed newAdmin);
     event AdminRemoved(address indexed removedAdmin);
-    event OracleAnswerRetrieved(uint256 betId, string oracleAnswer);
     event BetCanceled(uint256 id);
     event Withdrawal(uint256 amount, address walletAddress);
+    event ChangeFeePercentage(uint256 amount);
 
-    constructor(address payable _tellorAddress) UsingTellor(_tellorAddress) {
+    constructor() {
         admins[msg.sender] = true;
     }
 
@@ -98,6 +103,21 @@ contract BettingContract is UsingTellor {
         emit Withdrawal(amount, msg.sender);
     }
 
+    function setFeePercentage(uint256 amount) external onlyAdmin {
+        require(amount >= 0, "Amount must be equal or greater than 0");
+
+        feePercentage = amount;
+
+        emit ChangeFeePercentage(amount);
+    }
+
+    // Oracle From API3
+    function readOraclePriceDataFeed(
+        address proxy
+    ) public view returns (int224 value, uint32 timestamp) {
+        (value, timestamp) = IProxy(proxy).read();
+    }
+
     function registerBet(
         string memory _title,
         string memory _category,
@@ -106,7 +126,9 @@ contract BettingContract is UsingTellor {
         uint256 _executionTime,
         uint256 _expirationDate,
         string[] memory _options,
-        string memory _predictionType
+        string memory _predictionType,
+        uint256 _predictionValue,
+        bool _isGreaterQuestion
     ) external onlyAdmin {
         betCounter++;
         Bet storage newBet = bets[betCounter];
@@ -119,6 +141,8 @@ contract BettingContract is UsingTellor {
         newBet.id = betCounter;
         newBet.status = BetStatus.ACTIVE;
         newBet.predictionType = _predictionType;
+        newBet.predictionValue = _predictionValue;
+        newBet.isGreaterQuestion = _isGreaterQuestion;
 
         for (uint256 i = 0; i < _options.length; i++) {
             newBet.options[_options[i]] = 0;
@@ -133,7 +157,9 @@ contract BettingContract is UsingTellor {
             _category,
             _executionTime,
             _options,
-            _predictionType
+            _predictionType,
+            _predictionValue,
+            _isGreaterQuestion
         );
     }
 
@@ -191,21 +217,6 @@ contract BettingContract is UsingTellor {
         emit BetCanceled(_betId);
     }
 
-    function executeBet(uint256 _betId) external onlyAdmin {
-        Bet storage bet = bets[_betId];
-        require(
-            bet.status == BetStatus.ACTIVE,
-            "Bet has already been executed"
-        );
-
-        // Oracle Logic comes here
-
-        bet.status = BetStatus.FINISHED;
-        distributeRewards(bet, bet.correctAnswer);
-
-        emit BetExecuted(_betId, bet.correctAnswer);
-    }
-
     function adminExecuteBet(
         uint256 _betId,
         string memory _correctAnswer
@@ -223,36 +234,50 @@ contract BettingContract is UsingTellor {
         emit BetAdminExecuted(_betId, _correctAnswer);
     }
 
-    function getOracleAnswer(
+    function adminExecuteOraclePredictionBet(
         uint256 _betId,
-        string memory main_arg,
-        bytes[] memory extra_args
+        address _proxy
     ) external onlyAdmin {
         Bet storage bet = bets[_betId];
         require(
             bet.status == BetStatus.ACTIVE,
             "Bet has already been executed"
         );
-
-        // Prepare the query to the Oracle
-        bytes memory _queryData = abi.encode(main_arg, abi.encode(extra_args));
-        bytes32 _queryId = keccak256(_queryData);
-
-        // Retrieve data from the Oracle
-        (bytes memory _value, uint256 _timestampRetrieved) = _getDataBefore(
-            _queryId,
-            bet.executionTime + 1 hours
+        require(
+            bet.predictionValue > 0,
+            "Make sure the bet is price prediction"
         );
-        require(_timestampRetrieved != 0, "No data retrieved from Oracle");
 
-        // Convert the retrieved Oracle data into a string (or whatever format you need)
-        string memory oracleAnswer = abi.decode(_value, (string));
+        int224 _value;
+        uint32 _timestamp;
 
-        // Store the Oracle's answer in the bet
-        bet.oracleAnswer = oracleAnswer;
+        // get oracle price
+        (_value, _timestamp) = readOraclePriceDataFeed(_proxy);
 
-        // Emit an event or proceed with additional logic if needed
-        emit OracleAnswerRetrieved(_betId, oracleAnswer);
+        require(
+            block.timestamp > _timestamp,
+            "Oracle price time still not pass block timestamp"
+        );
+
+        // Now safely cast bet.predictionValue to int224 and compare
+        require(
+            uint(int256(_value)) != bet.predictionValue,
+            "Market price is equal to the prediction value, please cancel bet"
+        );
+
+        // won side
+        uint32 wonSide = 0;
+        if (
+            (uint(int256(_value)) < bet.predictionValue) !=
+            bet.isGreaterQuestion
+        ) {
+            wonSide = 1;
+        }
+
+        bet.status = BetStatus.FINISHED;
+        distributeRewards(bet, bet.optionKeys[wonSide]);
+
+        emit BetOraclePredictionExecuted(_betId, bet.optionKeys[wonSide]);
     }
 
     function distributeRewards(
@@ -264,7 +289,10 @@ contract BettingContract is UsingTellor {
             totalPool += bet.options[bet.optionKeys[i]];
         }
 
-        uint256 rewardPool = (totalPool * 99) / 100; // 1% fee for the contract/admin
+        uint256 totalFee = (totalPool * feePercentage) / 100;
+        require(totalPool >= totalFee, "Fee exceeds total reward");
+
+        uint256 rewardPool = totalPool - totalFee;
         uint256 correctOptionBets = bet.options[correctAnswer];
 
         Bettor[] storage correctBettors = bet.bettors[correctAnswer];
@@ -307,14 +335,17 @@ contract BettingContract is UsingTellor {
             BetStatus status,
             string[] memory optionKeys,
             uint256[] memory optionAmounts,
-            string memory predictionType
+            string memory predictionType,
+            uint256 predictionValue,
+            uint256 oracleValue,
+            bool isGreaterQuestion
         )
     {
         Bet storage bet = bets[_betId];
         (
             string[] memory options,
             uint256[] memory amounts
-        ) = getOptionsWithAmounts(_betId);
+        ) = getOptionsWithAmounts(bet.id);
         return (
             bet.title,
             bet.category,
@@ -326,7 +357,10 @@ contract BettingContract is UsingTellor {
             bet.status,
             options,
             amounts,
-            bet.predictionType
+            bet.predictionType,
+            bet.predictionValue,
+            bet.oracleValue,
+            bet.isGreaterQuestion
         );
     }
 
@@ -388,7 +422,7 @@ contract BettingContract is UsingTellor {
                 for (uint256 k = 0; k < amounts.length; k++) {
                     volume += amounts[k];
                 }
-                
+
                 for (uint256 k = 0; k < bettors.length; k++) {
                     if (bettors[k].bettor == _user) {
                         userBets[betIndex] = UserBetPosition({
@@ -424,7 +458,11 @@ contract BettingContract is UsingTellor {
             totalPool += bet.options[bet.optionKeys[i]];
         }
 
-        uint256 rewardPool = (totalPool * 99) / 100; // 1% fee
+        if (totalPool == 0) return 0;
+
+        uint256 totalFee = (totalPool * feePercentage) / 100;
+
+        uint256 rewardPool = totalPool - totalFee;
         uint256 correctOptionBets = bet.options[option];
 
         if (correctOptionBets == 0) return 0;
