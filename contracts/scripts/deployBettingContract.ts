@@ -1,5 +1,4 @@
 import { ethers } from "hardhat";
-import { BettingContract } from "../typechain-types"; // Import the correct type for your contract
 import { BettingDataForContract } from "../data/betting-data";
 
 async function main() {
