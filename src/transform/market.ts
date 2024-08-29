@@ -45,11 +45,14 @@ export function transformMarketItemFromContract(result: any): IMarketDataItem {
     }
   );
 
+  const statusEnum = ["Active", "Finished", "Canceled"]
+
   // Create the IMarketDataItem object
   const marketDataItem: IMarketDataItem = {
     id: Number(id), // Ensure the id is a number
     image,
     title,
+    status: statusEnum[resultStatus],
     category,
     isAIPick,
     type,
