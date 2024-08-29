@@ -136,7 +136,7 @@ const UserCard: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-medium text-green-500">{price}</p>
+                  <p className="text-sm font-medium text-rose-500">N/A</p>
                 </>
               )}
             </div>
