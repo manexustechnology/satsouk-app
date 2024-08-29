@@ -6,6 +6,7 @@ export const MarketListData: IMarketDataItem[] = [
     image: '/images/market-1.png',
     title: 'Will Gen.G Win VALORANT Champions Tour 2024?',
     category: 'gaming',
+    status: "Active",
     isAIPick: true,
     type: 'binary',
     options: [
@@ -29,6 +30,7 @@ export const MarketListData: IMarketDataItem[] = [
     image: '/images/market-2.png',
     title: 'Will China Have The Most Gold Medals In Paris 2024 Olympics?',
     category: 'trending',
+    status: "Active",
     isAIPick: true,
     type: 'binary',
     options: [
@@ -52,6 +54,7 @@ export const MarketListData: IMarketDataItem[] = [
     image: '/images/market-3.png',
     title: 'Will Bitcoin Pass 70K USD In The End of A Year?',
     category: 'trending',
+    status: "Active",
     isAIPick: true,
     type: 'binary',
     options: [
@@ -75,6 +78,7 @@ export const MarketListData: IMarketDataItem[] = [
     image: '/images/market-4.png',
     title: 'USA Presidential Election Winner 2024',
     category: 'trending',
+    status: "Active",
     isAIPick: true,
     type: 'selection',
     options: [
