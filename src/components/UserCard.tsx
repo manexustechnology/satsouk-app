@@ -7,10 +7,10 @@ import { normalize } from "path";
 import { useAccount, useBalance, useEnsAvatar, useEnsName } from "wagmi";
 import CustomAvatar from "./CustomAvatar";
 import Link from "next/link";
-import { renderWalletAddress } from "../utils/string";
+import { formatNumberToUSD, renderWalletAddress } from "../utils/string";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { truncateNumber } from "@/utils/number";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMyPositionDataItem } from "@/types/my-position";
 import { getMyPositionList } from "@/contract-call/market";
 import { useCrypto } from "@/context/CryptoContext";
@@ -19,6 +19,7 @@ const UserCard: React.FC = () => {
   const { price } = useCrypto();
   const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
   const { address, isConnected } = useAccount();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const ensNameResult = useEnsName({
     address,
   });
@@ -40,6 +41,14 @@ const UserCard: React.FC = () => {
     const data = await getMyPositionList(address as any);
     setMyPositionListData(data);
   }
+
+  useEffect(() => {
+    setIsLoggedIn(address ? true : false);
+
+    if (address) {
+      fetchMyPositionList();
+    }
+  }, [address])
 
 
   return (
@@ -108,7 +117,7 @@ const UserCard: React.FC = () => {
               <p className="text-xs text-zinc-400">Position Amount</p>
               {myPositionListData.length > 0 ? (
                 <>
-                  <p className="text-sm font-medium">{myPositionListData.map((item) => (item.amount || 0) * (price || 0)).reduce((sum, currentValue) => sum + currentValue, 0)}</p>
+                  <p className="text-sm font-medium">{formatNumberToUSD(myPositionListData.map((item) => (item.amount || 0) * (price || 0)).reduce((sum, currentValue) => sum + currentValue, 0))}</p>
                 </>
               ) : (
                 <>
@@ -123,11 +132,11 @@ const UserCard: React.FC = () => {
               <p className="text-xs text-zinc-400">Potential Prize</p>
               {myPositionListData.length > 0 ? (
                 <>
-                  <p className="text-sm font-medium text-green-500">{myPositionListData.map((item) => ((item.potentialPrize || 0) * (price || 0)) - ((item.amount || 0) * (price || 0))).reduce((sum, currentValue) => sum + currentValue, 0)}</p>
+                  <p className="text-sm font-medium text-green-500">{formatNumberToUSD(myPositionListData.map((item) => ((item.potentialPrize || 0) * (price || 0)) - ((item.amount || 0) * (price || 0))).reduce((sum, currentValue) => sum + currentValue, 0))}</p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-medium text-green-500">$0</p>
+                  <p className="text-sm font-medium text-green-500">{price}</p>
                 </>
               )}
             </div>
