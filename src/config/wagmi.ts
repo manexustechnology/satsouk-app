@@ -8,6 +8,8 @@ const activeChain = featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET")
   ? bobMainnet
   : bobSepoliaTestnet;
 
+console.log("activeChain", featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET"));
+
 export const wagmiConfig = getDefaultConfig({
   appName: process.env.NEXT_PUBLIC_APP_NAME || "App",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "",
