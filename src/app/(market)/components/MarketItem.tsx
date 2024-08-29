@@ -118,6 +118,19 @@ const MarketItem: React.FC<MarketItemProps> = ({
                   <span className="bg-primary-gradient bg-clip-text text-transparent">AI Picks</span>
                 </div>
               )}
+              {data.status === "Active" ? (
+                <div className="bg-zinc-800 text-primary-gradient text-xs px-2 py-0.5 rounded-[100px]">
+                  <span className="bg-primary-gradient bg-clip-text text-yellow-500">Active</span>
+                </div>
+              ) : data.status === "Finished" ? (
+                <div className="bg-zinc-800 text-primary-gradient text-xs px-2 py-0.5 rounded-[100px]">
+                  <span className="bg-primary-gradient bg-clip-text text-green-500">Finished</span>
+                </div>
+              ) : (
+                <div className="bg-zinc-800 text-primary-gradient text-xs px-2 py-0.5 rounded-[100px]">
+                  <span className="bg-primary-gradient bg-clip-text text-red-500">Canceled</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
