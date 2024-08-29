@@ -10,6 +10,7 @@ import { WagmiProvider } from 'wagmi'
 import { darkTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import CustomAvatar from '@/components/CustomAvatar'
 import { CryptoProvider } from '@/context/CryptoContext'
+import { DisclaimerProvider } from '@/context/DisclaimerContext'
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <ChakraProvider theme={chakraTheme}>
             <AntdRegistry>
               <CryptoProvider>
-                {children}
+                <DisclaimerProvider>
+                  {children}
+                </DisclaimerProvider>
               </CryptoProvider>
             </AntdRegistry>
           </ChakraProvider>

@@ -16,6 +16,7 @@ import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { transformMarketItemFromContract } from "@/transform/market";
 import { getBettingList, getMyPositionList } from "@/contract-call/market";
 import { IMyPositionDataItem } from "@/types/my-position";
+import { useDisclaimer } from "@/context/DisclaimerContext";
 
 const tabList: IMarketTabsMenuItem[] = [
   {
@@ -42,6 +43,7 @@ const tabList: IMarketTabsMenuItem[] = [
 const MarketListCard: React.FC = ({
 }) => {
   const { address, isConnected } = useAccount();
+  const { isAcceptDisclaimerRisk } = useDisclaimer();
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
@@ -105,7 +107,7 @@ const MarketListCard: React.FC = ({
                     {listCounter++ > 0 && (
                       <Divider className="!border-zinc-800 !m-0 z-10" />
                     )}
-                    <MarketItem data={item} showAcceptanceModal={!(myPositionListData.length > 0)} onSuccessPlaceBet={() => fetchBettingList()} />
+                    <MarketItem data={item} showAcceptanceModal={!(myPositionListData.length > 0) && !isAcceptDisclaimerRisk} onSuccessPlaceBet={() => fetchBettingList()} />
                   </div>
                 )
               })}
