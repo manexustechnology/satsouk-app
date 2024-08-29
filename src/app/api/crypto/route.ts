@@ -62,6 +62,9 @@ import { Contract, formatEther, JsonRpcProvider } from "ethers";
 const activeChain = featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET")
   ? bobMainnet
   : bobSepoliaTestnet;
+
+console.log("activeChain", featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET"));
+
 const ethProxyAddress = String(process.env.NEXT_PUBLIC_API3_ETH_PROXY_ADDRESS);
 
 const provider = new JsonRpcProvider(activeChain.rpcUrls.default.http[0]);

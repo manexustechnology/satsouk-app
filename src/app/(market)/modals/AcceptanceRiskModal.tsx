@@ -1,41 +1,11 @@
 "use client";
-import { bettingContractAddress } from "@/config/network";
-import { useCrypto } from "@/context/CryptoContext";
-import { IMarketDataItem } from "@/types/market";
-import { capitalizeWords, formatNumberToUSD } from "@/utils/string";
+import { useDisclaimer } from "@/context/DisclaimerContext";
 import {
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Box,
-  Flex,
-  Image,
-  Progress,
-  Stack,
-  Button,
-  Input,
-  Icon,
-  IconButton,
 } from "@chakra-ui/react";
-import { MinusCircle } from "@phosphor-icons/react";
-import { Heart } from "@phosphor-icons/react/dist/csr/Heart";
-import {
-  Calendar,
-  Circle,
-  ArrowRight,
-  ArrowsClockwise,
-  Plus,
-  Minus,
-  PlusCircle,
-} from "@phosphor-icons/react/dist/ssr";
-import dayjs from "dayjs";
-import { useEffect, useMemo, useState } from "react";
-import { useAccount, useBalance, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { bettingContractAbi } from "../../../../contracts/main";
-import { parseUnits } from "viem";
-import { truncateNumber } from "@/utils/number";
 import { Divider } from "antd";
 
 interface BuyModalProps {
@@ -45,7 +15,10 @@ interface BuyModalProps {
 }
 
 const AcceptanceRiskModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onAgree }) => {
+  const { setIsAcceptDisclaimerRisk } = useDisclaimer();
+
   const handleAgree = () => {
+    setIsAcceptDisclaimerRisk(true);
     onAgree();
     onClose();
   }
