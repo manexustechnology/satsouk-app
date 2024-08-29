@@ -14,6 +14,7 @@ export interface IMarketDataItem {
   id: number;
   image: string;
   title: string;
+  status: string;
   category: string;
   isAIPick?: boolean;
   type: "binary" | "selection";
