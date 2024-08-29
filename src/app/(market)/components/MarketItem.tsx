@@ -9,20 +9,24 @@ import Link from "next/link";
 import React, { useState } from "react";
 import BuyModal from "../modals/BuyModal";
 import { useCrypto } from "@/context/CryptoContext";
+import AcceptanceRiskModal from "../modals/AcceptanceRiskModal";
 
 interface MarketItemProps {
   data: IMarketDataItem;
+  showAcceptanceModal: boolean;
   onSuccessPlaceBet: () => void;
 }
 
 const MarketItem: React.FC<MarketItemProps> = ({
   data,
+  showAcceptanceModal,
   onSuccessPlaceBet = () => { },
 }) => {
   const { price } = useCrypto();
 
   const [viewAll, setViewAll] = useState<boolean>(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState<boolean>(false);
+  const [isAcceptanceRiskModalOpen, setIsAcceptanceRiskModalOpen] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<string>('');
 
   const renderBinary = (): React.ReactNode => {
@@ -89,8 +93,16 @@ const MarketItem: React.FC<MarketItemProps> = ({
   }
 
   const handleClick = (option: string) => {
+    if (showAcceptanceModal) {
+      setIsAcceptanceRiskModalOpen(true);
+    } else {
+      setIsBuyModalOpen(true);
+    }
+    setOptionSelected(option);
+  }
+
+  const agreeAcceptance = () => {
     setIsBuyModalOpen(true);
-    setOptionSelected(option)
   }
 
   return (
@@ -152,6 +164,7 @@ const MarketItem: React.FC<MarketItemProps> = ({
         </div>
       </div>
       <BuyModal isOpen={isBuyModalOpen} onClose={() => setIsBuyModalOpen(false)} onSuccessBet={() => onSuccessPlaceBet()} data={data} optionSelected={optionSelected} />
+      <AcceptanceRiskModal isOpen={isAcceptanceRiskModalOpen} onClose={() => setIsAcceptanceRiskModalOpen(false)} onAgree={() => agreeAcceptance()} />
     </div>
   )
 }

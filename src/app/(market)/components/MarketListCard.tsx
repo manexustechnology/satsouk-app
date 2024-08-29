@@ -12,9 +12,10 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { bettingContractAddress } from "@/config/network";
 import { bettingContractAbi } from "../../../../contracts/main";
-import { useReadContract, useReadContracts } from "wagmi";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { transformMarketItemFromContract } from "@/transform/market";
-import { getBettingList } from "@/contract-call/market";
+import { getBettingList, getMyPositionList } from "@/contract-call/market";
+import { IMyPositionDataItem } from "@/types/my-position";
 
 const tabList: IMarketTabsMenuItem[] = [
   {
@@ -40,10 +41,12 @@ const tabList: IMarketTabsMenuItem[] = [
 
 const MarketListCard: React.FC = ({
 }) => {
+  const { address, isConnected } = useAccount();
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
   const [marketListData, setMarketListData] = useState<IMarketDataItem[]>([]);
+  const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
 
   useEffect(() => {
     if (search && search.length > 0) {
@@ -59,6 +62,17 @@ const MarketListCard: React.FC = ({
     const data = await getBettingList();
     setMarketListData(data);
   }
+
+  const fetchMyPositionList = async () => {
+    const data = await getMyPositionList(address as any);
+    setMyPositionListData(data);
+  }
+
+  useEffect(() => {
+    if (address) {
+      fetchMyPositionList();
+    }
+  }, [address])
 
   let listCounter = 0;
 
@@ -91,7 +105,7 @@ const MarketListCard: React.FC = ({
                     {listCounter++ > 0 && (
                       <Divider className="!border-zinc-800 !m-0 z-10" />
                     )}
-                    <MarketItem data={item} onSuccessPlaceBet={() => fetchBettingList()} />
+                    <MarketItem data={item} showAcceptanceModal={!(myPositionListData.length > 0)} onSuccessPlaceBet={() => fetchBettingList()} />
                   </div>
                 )
               })}
@@ -102,7 +116,7 @@ const MarketListCard: React.FC = ({
                   </div>
                   <div className="flex flex-col gap-8 blur-md">
                     <Divider className="!border-zinc-800 !m-0 z-10" />
-                    <MarketItem data={MarketListData[3]} onSuccessPlaceBet={() => fetchBettingList()} />
+                    <MarketItem data={MarketListData[3]} showAcceptanceModal={!(myPositionListData.length > 0)} onSuccessPlaceBet={() => fetchBettingList()} />
                   </div>
                 </div>
               )}
