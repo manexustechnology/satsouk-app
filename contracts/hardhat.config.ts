@@ -13,7 +13,7 @@ const config: HardhatUserConfig = {
     // Local
     hardhat: {
       forking: {
-        url: "https://testnet.rpc.gobob.xyz", // BOB Testnet RPC
+        url: "https://bob-sepolia.rpc.gobob.xyz", // BOB Testnet RPC
       },
       accounts: [
         {
@@ -24,14 +24,14 @@ const config: HardhatUserConfig = {
     },
     // Bob Testnet
     bob_testnet: {
-      url: "https://testnet.rpc.gobob.xyz", // BOB Testnet RPC
+      url: "https://bob-sepolia.rpc.gobob.xyz", // BOB Testnet RPC
       accounts: [vars.get("WALLET_PRIVATE_KEY")],
     },
     // Bob Mainnet
     bob_mainnet: {
-      url: 'https://rpc.gobob.xyz/',
+      url: "https://rpc.gobob.xyz/",
       accounts: [vars.get("WALLET_PRIVATE_KEY")],
-    }
+    },
   },
 };
 
