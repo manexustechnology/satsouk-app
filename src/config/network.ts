@@ -2,18 +2,18 @@ import { Chain } from "@rainbow-me/rainbowkit";
 import { type Chain as ViemChain } from "viem";
 
 export const bobSepoliaTestnet = {
-  id: 111,
+  id: 808813,
   name: "BOB Sepolia (Testnet)",
   iconUrl: "https://docs.gobob.xyz/img/logo-light.svg",
   iconBackground: "#fff",
   nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
   rpcUrls: {
-    default: { http: ["https://testnet.rpc.gobob.xyz"] },
+    default: { http: ["https://bob-sepolia.rpc.gobob.xyz"] },
   },
   blockExplorers: {
     default: {
       name: "Blockscout",
-      url: "https://testnet-explorer.gobob.xyz",
+      url: "https://bob-sepolia.explorer.gobob.xyz",
     },
   },
 } as const satisfies Chain | ViemChain;
