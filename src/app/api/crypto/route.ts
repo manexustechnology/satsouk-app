@@ -59,18 +59,19 @@ import { Contract, formatEther, JsonRpcProvider } from "ethers";
 //   }
 // }
 
-const activeChain = featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET")
-  ? bobMainnet
-  : bobSepoliaTestnet;
-
 const ethProxyAddress = String(process.env.NEXT_PUBLIC_API3_ETH_PROXY_ADDRESS);
+const mainnetContractAddress = String(
+  process.env.NEXT_PUBLIC_BETTING_CONTRACT_MAINNET_ADDRESS
+);
 
-const provider = new JsonRpcProvider(activeChain.rpcUrls.default.http[0]);
+const provider = new JsonRpcProvider(bobMainnet.rpcUrls.default.http[0]);
 
 export async function GET(request: Request) {
   try {
     const bettingContract = new Contract(
-      bettingContractAddress as `0x${string}`,
+      (featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET")
+        ? bettingContractAddress
+        : mainnetContractAddress) as `0x${string}`,
       bettingContractAbi,
       provider
     );
