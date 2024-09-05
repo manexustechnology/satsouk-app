@@ -163,13 +163,10 @@ contract BettingContract {
         );
     }
 
-    function placeBet(uint256 _betId, string memory _option) external payable {
-        Bet storage bet = bets[_betId];
-        require(
-            block.timestamp < bet.expirationDate,
-            "Betting on this event has expired"
-        );
-
+    function checkOptionAvailable(
+        Bet storage bet,
+        string memory _option
+    ) internal view returns (bool) {
         bool available = bet.options[_option] > 0;
 
         if (!available) {
@@ -185,6 +182,17 @@ contract BettingContract {
             }
         }
 
+        return available;
+    }
+
+    function placeBet(uint256 _betId, string memory _option) external payable {
+        Bet storage bet = bets[_betId];
+        require(
+            block.timestamp < bet.expirationDate,
+            "Betting on this event has expired"
+        );
+
+        bool available = checkOptionAvailable(bet, _option);
         require(available, "Invalid option");
 
         bet.options[_option] += msg.value;
@@ -227,9 +235,13 @@ contract BettingContract {
             "Bet has already been executed"
         );
 
+        bool available = checkOptionAvailable(bet, _correctAnswer);
+        require(available, "Invalid option");
+
+        distributeRewards(bet, _correctAnswer);
+
         bet.correctAnswer = _correctAnswer;
         bet.status = BetStatus.FINISHED;
-        distributeRewards(bet, _correctAnswer);
 
         emit BetAdminExecuted(_betId, _correctAnswer);
     }
@@ -274,8 +286,9 @@ contract BettingContract {
             wonSide = 1;
         }
 
-        bet.status = BetStatus.FINISHED;
         distributeRewards(bet, bet.optionKeys[wonSide]);
+
+        bet.status = BetStatus.FINISHED;
 
         emit BetOraclePredictionExecuted(_betId, bet.optionKeys[wonSide]);
     }
