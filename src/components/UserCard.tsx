@@ -1,6 +1,6 @@
 'use client';
 
-import { Flame, Wallet } from "@phosphor-icons/react/dist/ssr";
+import { Flame, Wallet, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { Divider } from "antd";
 import { normalize } from "path";
 import { useAccount, useBalance, useEnsAvatar, useEnsName } from "wagmi";
@@ -291,6 +291,12 @@ const UserCard: React.FC = () => {
           <Link href="/my-position" className="w-full flex justify-center items-center gap-1 bg-zinc-800 rounded-xl p-3">
             <Wallet weight="bold" size={16} />
             <p className="text-sm font-medium">Your position</p>
+          </Link>
+        </div>
+        <div className="w-full">
+          <Link href="/votes" className="w-full flex justify-center items-center gap-1 bg-zinc-800 rounded-xl p-3">
+            <CheckCircle weight="bold" size={16} />
+            <p className="text-sm font-medium">Votes</p>
           </Link>
         </div>
         {renderReferralContent}
