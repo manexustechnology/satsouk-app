@@ -2,7 +2,7 @@
 
 import MarketTabsMenu from "@/app/(market)/components/v2/MarketTabsMenu";
 import { IMarketDataItem, IMarketTabsMenuItem } from "@/types/market";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MarketItem from "@/app/(market)/components/v2/MarketItem";
 import { cn } from "@/utils/cn";
 import { useSearchParams } from "next/navigation";
@@ -147,9 +147,14 @@ const MarketListCard: React.FC = ({
                     data={item}
                     showAcceptanceModal={!(myPositionListData.length > 0) && !isAcceptDisclaimerRisk}
                     onSuccessPlaceBet={() => fetchBettingList()}
-                    key={dataIndex}/>
+                    key={dataIndex} />
                 )
               })}
+
+              <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-8 flex flex-col justify-center items-center max-md:px-9 max-md:py-16">
+                <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
+                <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14">Get updates</button>
+              </div>
               {/* {(tabList[selectedTabIndex]?.slug || false) && tabList[selectedTabIndex].slug !== 'sports' && (
                 <div className="relative">
                   <div className="absolute top-0 left-0 bottom-0 right-0 z-20 w-full h-full m-auto flex justify-center items-center">
