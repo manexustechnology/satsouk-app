@@ -1,9 +1,9 @@
-import MarketDetailClientPage from "../../components/market-detail/MarketDetailClientPage";
+import MarketDetailClientPageV2 from "../../components/market-detail/MarketDetailClientPageV2";
 
 export default function MarketDetailPage() {
   return (
     <>
-      <MarketDetailClientPage />
+      <MarketDetailClientPageV2 />
     </>
   );
 }

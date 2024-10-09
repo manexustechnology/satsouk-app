@@ -141,7 +141,7 @@ const MarketListCard: React.FC = ({
                 if (item.type === 'selection') {
                   return null;
                 }
-
+                console.log(item)
                 return (
                   <MarketItem
                     data={item}
