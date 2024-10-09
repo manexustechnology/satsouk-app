@@ -1,7 +1,7 @@
 'use client';
 
 import UserCard from "@/components/UserCard";
-import MarketListCard from "./MarketListCard";
+// import MarketListCard from "./MarketListCard";
 import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { useEffect, useState } from "react";
 import { featureFlag } from "@/utils/feature-flag";
@@ -9,6 +9,7 @@ import { bettingContractAddress, bobMainnet, bobSepoliaTestnet } from "@/config/
 import { bettingContractAbi } from "../../../../contracts/main";
 import { transformMarketItemFromContract } from "@/transform/market";
 import { useCrypto } from "@/context/CryptoContext";
+import MarketListCard from "./v2/MarketListCard";
 
 const MarketClientPage: React.FC = () => {
   const { address } = useAccount();
@@ -29,16 +30,16 @@ const MarketClientPage: React.FC = () => {
 
   return (
     <>
-      <div className="w-full flex gap-4 py-4 relative">
+      <div className="grid grid-cols-8 py-4 relative">
         {address && (
-          <div className="w-1/3 flex flex-col gap-4 sticky top-[90px]">
+          <div className="col-span-2 flex flex-col gap-4 sticky top-[90px]">
             <UserCard />
             {/* Will be used later */}
             {/* <UserStatisticsCard />
             <SidebarMenu /> */}
           </div>
         )}
-        <div className="w-2/3 mx-auto">
+        <div className={`${address ? 'col-span-6' : 'col-span-full'}`}>
           <MarketListCard />
         </div>
       </div>
