@@ -1,3 +1,5 @@
+"use client"
+
 import { formatNumber, formatNumberToUSD } from "@/utils/string"
 import { ArrowLeft, CalendarBlank, HeartStraight } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
@@ -5,11 +7,17 @@ import ProgressBar from "../v2/ProgressBar"
 import VoteAction from "../v2/VoteAction"
 import Badge from "../v2/Badge"
 import CardSummary from "../v2/CardSummary"
+import { useRouter } from "next/router"
 
 const MarketDetailClientPageV2 = () => {
+
+  const goBack = () => {
+    history.back()
+  }
+
   return (
-    <section className="max-md:p-2">
-      <button className="bg-zinc-800 py-5 px-10 rounded-full font-medium text-base mb-3 flex gap-x-3 items-center max-md:hidden">
+    <section className="max-md:p-2 mt-20 p-6">
+      <button className="bg-zinc-800 py-5 px-10 rounded-full font-medium text-base mb-3 flex gap-x-3 items-center max-md:hidden" onClick={() => goBack()}>
         <ArrowLeft /> Back
       </button>
       <div className="grid grid-cols-8 gap-2 max-md:grid-cols-1">
