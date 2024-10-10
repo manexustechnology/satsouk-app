@@ -22,10 +22,12 @@ const MarketDetailClientPageV2 = () => {
 
   return (
     <main className="max-md:p-2 mt-20 p-6 grid grid-cols-8 gap-2 max-md:grid-cols-1">
-      <div className="col-span-2 max-md:col-span-1">
-        <MarketDetailDailyReward />
-      </div>
-      <div className="col-span-6 max-md:col-span-1">
+      {address && (
+        <div className="col-span-2 max-md:col-span-1">
+          <MarketDetailDailyReward />
+        </div>
+      )}
+      <div className={`max-md:col-span-1 ${cn(address ? 'col-span-6' : 'col-span-8')}`}>
         <button className="bg-zinc-800 py-5 px-10 rounded-full font-medium text-base mb-3 flex gap-x-3 items-center max-md:hidden" onClick={() => goBack()}>
           <ArrowLeft /> Back
         </button>
