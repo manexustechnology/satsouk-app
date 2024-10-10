@@ -120,7 +120,7 @@ const MarketListCard: React.FC = ({
 
   return (
     <>
-      <div className="bg-zinc-950 rounded-[24px] gap-8 p-6">
+      <div className="bg-zinc-950 rounded-[24px] gap-8 px-3">
         <MarketTabsMenu tabList={tabList} onTabChange={(index) => setSelectedTabIndex(index)} selectedTabIndex={selectedTabIndex} />
         {marketListData.length > 0 ? (
           <div className="relative">
