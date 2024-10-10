@@ -1,9 +1,9 @@
 import { ArrowUpRight, CaretLeft, FireSimple } from "@phosphor-icons/react/dist/ssr"
-import Badge from "../v2/Badge"
+import Badge from "./Badge"
 import { Progress } from "@chakra-ui/react"
 import { CaretRight } from "@phosphor-icons/react"
 
-const MarketDetailDailyReward = () => {
+const UserCard = () => {
   return (
     <section className="grid grid-cols-1 gap-2">
       {/* Daily Reward */}
@@ -150,4 +150,4 @@ const MarketDetailDailyReward = () => {
   )
 }
 
-export default MarketDetailDailyReward
+export default UserCard;

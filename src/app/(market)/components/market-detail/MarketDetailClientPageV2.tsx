@@ -10,8 +10,8 @@ import CardSummary from "../v2/CardSummary"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import '@/app/(market)/styles/marketDetailClientPageV2.css'
 import { useAccount } from "wagmi"
-import MarketDetailDailyReward from "./MarketDetailDailyReward"
 import { cn } from "@/utils/cn"
+import UserCard from "../v2/UserCard"
 
 const MarketDetailClientPageV2 = () => {
   const { address } = useAccount()
@@ -24,14 +24,14 @@ const MarketDetailClientPageV2 = () => {
     <main className="max-md:p-2 mt-20 p-6 grid grid-cols-8 gap-2 max-md:grid-cols-1">
       {address && (
         <div className="col-span-2 max-md:col-span-1">
-          <MarketDetailDailyReward />
+          <UserCard />
         </div>
       )}
       <div className={`max-md:col-span-1 ${cn(address ? 'col-span-6' : 'col-span-8')}`}>
         <button className="bg-zinc-800 py-5 px-10 rounded-full font-medium text-base mb-3 flex gap-x-3 items-center max-md:hidden" onClick={() => goBack()}>
           <ArrowLeft /> Back
         </button>
-        <div className={`grid gap-2 max-md:grid-cols-1 ${cn( address ? 'grid-cols-1' : 'grid-cols-8')}`}>
+        <div className={`grid gap-2 max-md:grid-cols-1 ${cn(address ? 'grid-cols-1' : 'grid-cols-8')}`}>
           <div className="col-span-3 max-md:col-span-1">
             <div className="bg-zinc-900 p-3 rounded-3xl">
               {/* header */}
