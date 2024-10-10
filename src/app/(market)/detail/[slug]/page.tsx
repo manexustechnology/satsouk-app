@@ -2,8 +2,6 @@ import MarketDetailClientPageV2 from "../../components/market-detail/MarketDetai
 
 export default function MarketDetailPage() {
   return (
-    <>
-      <MarketDetailClientPageV2 />
-    </>
+    <MarketDetailClientPageV2 />
   );
 }
