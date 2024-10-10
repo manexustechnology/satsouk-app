@@ -58,8 +58,8 @@ const GetUpdatesModal: React.FC<GetUpdatesModalProps> = ({
         borderRadius="10px"
         position="absolute"
         padding="16px"
-        minWidth="616px"
         gap="12px"
+        className="!w-full md:min-w-[616px]"
       >
         <Flex direction="row" justify="space-between" align="start">
           <div className="flex gap-[6px] flex-col">
