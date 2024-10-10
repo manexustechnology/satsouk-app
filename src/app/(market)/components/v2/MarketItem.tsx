@@ -32,21 +32,12 @@ const MarketItem: React.FC<MarketItemProps> = ({
     return (
       <div className="flex justify-between gap-4">
         <div className="flex flex-col gap-2 w-full justify-end">
-          <ProgressBar totalYes={data.options?.[0]?.percentage || 50} totalNo={data.options?.[1]?.percentage || 50} />
-          <div className="flex justify-between items-center">
-            <div className="flex gap-1 items-center text-xs">
-              <p className="text-green-600 font-medium text-xs">{data.options?.[0]?.percentage.toFixed(2)}%</p>
-              <p className="text-xs">{formatNumberToUSD((data.options?.[0]?.volume || 0) * (price || 0))}</p>
-            </div>
-            <div className="flex gap-1 items-center text-xs">
-              <p className="text-rose-600 font-medium text-xs">{data.options?.[1].percentage.toFixed(2)}%</p>
-              <p className="text-xs">{formatNumberToUSD((data.options?.[1]?.volume || 0) * (price || 0))}</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            <button className="rounded-full py-2 text-sm font-medium text-green-500 bg-green-950">Yes</button>
-            <button className="rounded-full py-2 text-sm font-medium text-rose-500 bg-rose-950">No</button>
-          </div>
+          <ProgressBar
+            totalYes={data.options?.[0]?.percentage || 50}
+            totalNo={data.options?.[1]?.percentage || 50}
+            volumeYes={(data.options?.[0]?.volume || 0) * (price || 0)}
+            volumeNo={(data.options?.[1]?.volume || 0) * (price || 0)}
+          />
         </div>
       </div>
     )
