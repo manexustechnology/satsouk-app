@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
 // import MarketListCard from "./MarketListCard";
 import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { useEffect, useState } from "react";
 import { featureFlag } from "@/utils/feature-flag";
-import { bettingContractAddress, bobMainnet, bobSepoliaTestnet } from "@/config/network";
+import {
+  bettingContractAddress,
+  bobMainnet,
+  bobSepoliaTestnet,
+} from "@/config/network";
 import { bettingContractAbi } from "../../../../contracts/main";
 import { transformMarketItemFromContract } from "@/transform/market";
 import { useCrypto } from "@/context/CryptoContext";
@@ -23,26 +27,30 @@ const MarketClientPage: React.FC = () => {
 
   useEffect(() => {
     if (domLoaded) {
-      fetchPrice('eth');
+      fetchPrice("eth");
     }
-  }, [domLoaded])
+  }, [domLoaded]);
 
-  if (!domLoaded) return <></>
+  if (!domLoaded) return <></>;
 
   return (
     <>
-      <div className="grid grid-cols-8 py-4 relative">
+      <div className="grid grid-cols-1 md:grid-cols-8 py-4 relative">
         {address && (
           <div className="col-span-2 max-md:col-span-1">
             <UserCard />
           </div>
         )}
-        <div className={`max-md:col-span-1 ${cn(address ? 'col-span-6' : 'col-span-8')}`}>
+        <div
+          className={`max-md:col-span-1 ${cn(
+            address ? "col-span-6" : "col-span-8"
+          )}`}
+        >
           <MarketListCard />
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default MarketClientPage;
