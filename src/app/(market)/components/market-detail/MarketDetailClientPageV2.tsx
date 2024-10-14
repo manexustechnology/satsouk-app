@@ -27,7 +27,7 @@ const MarketDetailClientPageV2 = () => {
           <UserCard />
         </div>
       )}
-      <div className={`max-md:col-span-1 ${cn(address ? 'col-span-6' : 'col-span-8')}`}>
+      <div className={`max-md:col-span-1 px-1 md:px-0 ${cn(address ? 'col-span-6' : 'col-span-8')}`}>
         <button className="bg-zinc-800 py-5 px-10 rounded-full font-medium text-base mb-3 flex gap-x-3 items-center max-md:hidden" onClick={() => goBack()}>
           <ArrowLeft /> Back
         </button>

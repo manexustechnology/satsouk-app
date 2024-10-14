@@ -16,12 +16,12 @@ const MarketTabsMenu: React.FC<MarketTabsMenuProps> = ({
   onTabChange,
 }) => {
   return (
-    <div className="flex overflow-auto mb-3 gap-1 rounded-full" id="market-tab-menu">
+    <div className="flex mb-3 gap-1 rounded-full w-full" id="market-tab-menu">
       {tabList.map((item, index) => (
         <button
           key={index}
           className={cn(
-            'min-w-60 rounded-full py-5 transition-colors max-md:min-w-24',
+            'rounded-full py-5 transition-colors w-full',
             selectedTabIndex === index ? 'bg-zinc-800 text-white' : 'text-zinc-400 bg-zinc-900'
           )}
           onClick={() => {

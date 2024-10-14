@@ -13,27 +13,9 @@ import { IMyPositionDataItem } from "@/types/my-position";
 import { useDisclaimer } from "@/context/DisclaimerContext";
 import Pagination from "./Pagination";
 import useResizeWindow from "../../hooks/useResizeWindow";
+import GetUpdatesModal from "../../modals/GetUpdatesModal";
 
 const tabList: IMarketTabsMenuItem[] = [
-  {
-    slug: 'for-you',
-    label: 'For you',
-  },
-  {
-    slug: 'gaming',
-    label: 'Gaming',
-    image: '/images/gaming-tab.png'
-  },
-  {
-    slug: 'sports',
-    label: 'Sports',
-    image: '/images/sports-tab.png'
-  },
-  {
-    slug: 'trending',
-    label: 'Trending',
-    image: '/images/trending-tab.png'
-  },
   {
     slug: 'for-you',
     label: 'For you',
@@ -64,6 +46,7 @@ const MarketListCard: React.FC = ({
   const search = searchParams.get('search');
   const [marketListData, setMarketListData] = useState<IMarketDataItem[]>([]);
   const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
+  const [getUpdatesModalOpen, setGetUpdatesModalOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const { windowSize } = useResizeWindow();
 
@@ -120,7 +103,7 @@ const MarketListCard: React.FC = ({
 
   return (
     <>
-      <div className="bg-zinc-950 rounded-[24px] gap-8 px-3">
+      <div className="bg-zinc-950 rounded-[24px] gap-8 px-1 md:px-3">
         <MarketTabsMenu tabList={tabList} onTabChange={(index) => setSelectedTabIndex(index)} selectedTabIndex={selectedTabIndex} />
         {marketListData.length > 0 ? (
           <div className="relative">
@@ -153,19 +136,9 @@ const MarketListCard: React.FC = ({
 
               <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-8 flex flex-col justify-center items-center max-md:px-9 max-md:py-16">
                 <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
-                <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14">Get updates</button>
+                <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14" onClick={() => setGetUpdatesModalOpen(true)}>Get updates</button>
+                <GetUpdatesModal isOpen={getUpdatesModalOpen} onClose={() => setGetUpdatesModalOpen(false)} />
               </div>
-              {/* {(tabList[selectedTabIndex]?.slug || false) && tabList[selectedTabIndex].slug !== 'sports' && (
-                <div className="relative">
-                  <div className="absolute top-0 left-0 bottom-0 right-0 z-20 w-full h-full m-auto flex justify-center items-center">
-                    <div className="rounded-xl px-4 py-2 text-white text-base bg-zinc-800">Coming soon</div>
-                  </div>
-                  <div className="flex flex-col gap-8 blur-md">
-                    <Divider className="!border-zinc-800 !m-0 z-10" />
-                    <MarketItem data={MarketListData[3]} showAcceptanceModal={!(myPositionListData.length > 0)} onSuccessPlaceBet={() => fetchBettingList()} />
-                  </div>
-                </div>
-              )} */}
             </div>
             <Pagination
               isMobile={windowSize?.width <= 768}
