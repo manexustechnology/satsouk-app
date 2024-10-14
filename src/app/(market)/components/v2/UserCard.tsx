@@ -39,7 +39,7 @@ const UserCard = () => {
   }, []);
 
   return (
-    <section className="grid grid-cols-1 gap-2 mb-2">
+    <section className="grid grid-cols-1 gap-2 mb-2 px-1 md:px-0">
       {/* Daily Reward */}
       <div className="bg-zinc-900 p-5 rounded-3xl">
         {/* Title */}
@@ -50,9 +50,8 @@ const UserCard = () => {
               <ArrowUpRight color="#A1A1AA" size={16} />
             </button>
             <button
-              className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${
-                isOpenDaily ? "rotate-180" : ""
-              }`}
+              className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${isOpenDaily ? "rotate-180" : ""
+                }`}
               onClick={toggleAccordionDaily}
             >
               <CaretDown color="#A1A1AA" size={16} />
@@ -128,9 +127,8 @@ const UserCard = () => {
               <ArrowUpRight color="#A1A1AA" size={16} />
             </button>
             <button
-              className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${
-                isOpenMission ? "rotate-180" : ""
-              }`}
+              className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${isOpenMission ? "rotate-180" : ""
+                }`}
               onClick={toggleAccordionMission}
             >
               <CaretDown color="#A1A1AA" size={16} />

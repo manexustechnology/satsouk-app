@@ -35,7 +35,7 @@ const MarketClientPage: React.FC = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-8 py-4 relative">
+      <div className="grid grid-cols-1 md:grid-cols-8 p-6 max-md:p-2 relative">
         {address && (
           <div className="col-span-2 max-md:col-span-1">
             <UserCard />
