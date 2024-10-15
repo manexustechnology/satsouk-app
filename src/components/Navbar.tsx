@@ -100,11 +100,11 @@ const Navbar: React.FC = () => {
                 <div className={`p-3 bg-zinc-800 rounded-full transition-all duration-150 ${cn(showSearchInput ? 'opacity-0 w-0 hidden' : 'opacity-100 w-auto')}`} role="button" onClick={toggleShowSearchInput}>
                   <MagnifyingGlass weight="bold" size={14} className="text-zinc-400" />
                 </div>
-                <InputGroup className={`w-full transition-all duration-150 ${cn(showSearchInput ? 'max-w-[360px] opacity-100' : 'max-w-[0] opacity-0 hidden')}`} bg='zinc.800' rounded='xl'>
+                <InputGroup className={`w-full transition-all duration-150 ${cn(showSearchInput ? 'max-w-[360px] opacity-100' : 'max-w-[0] opacity-0 hidden')}`} bg='zinc.800' rounded='full'>
                   <InputLeftElement pointerEvents='none'>
                     <MagnifyingGlass weight="bold" size={14} className="text-zinc-400" />
                   </InputLeftElement>
-                  <Input type='text' onBlur={toggleShowSearchInput} ref={searchRef} placeholder='Search markets' onChange={(e) => debounceSearchInput(e.target.value)} pl={10} fontSize='sm' rounded='xl' border="none" className="!placeholder-zinc-600" />
+                  <Input type='text' onBlur={toggleShowSearchInput} ref={searchRef} placeholder='Search markets' onChange={(e) => debounceSearchInput(e.target.value)} pl={10} fontSize='sm' rounded='full' border="none" className="!placeholder-zinc-600" />
                 </InputGroup>
               </div>
               <Link href="/" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full " + cn(pathname === '/' ? 'border border-zinc-400' : '')}>
@@ -119,10 +119,15 @@ const Navbar: React.FC = () => {
           </div>
           <div className="flex justify-end items-center w-1/3 gap-3 max-md:w-full mr-2.5 md:mr-0">
             {address && (
-              <button className="bg-zinc-800 rounded-xl h-10 w-10 relative flex justify-center items-center">
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-rose-500 rounded-full border-4 border-zinc-900"></span>
-                <BellSimple weight="bold" size={16} />
-              </button>
+              <>
+                <button className="bg-zinc-800 rounded-xl h-10 w-10 relative flex justify-center items-center">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-rose-500 rounded-full border-4 border-zinc-900"></span>
+                  <BellSimple weight="bold" size={16} />
+                </button>
+                <div className="bg-zinc-800 rounded-full px-3 py-2 flex justify-center items-center">
+                  <p className="text-base font-medium bg-primary-gradient bg-clip-text text-transparent">200 SP</p>
+                </div>
+              </>
             )}
             <div id="connect-button" className="relative">
               <ConnectButton

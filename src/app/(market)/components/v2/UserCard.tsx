@@ -10,6 +10,7 @@ import Badge from "./Badge";
 import { Progress } from "@chakra-ui/react";
 import { CaretRight } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const UserCard = () => {
   const [isOpenDaily, setIsOpenDaily] = useState(false);
@@ -46,9 +47,9 @@ const UserCard = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-lg">Daily reward streak</h2>
           <div className="flex gap-2">
-            <button className="p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95">
+            <Link href={'/profile'} className="p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95">
               <ArrowUpRight color="#A1A1AA" size={16} />
-            </button>
+            </Link>
             <button
               className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${isOpenDaily ? "rotate-180" : ""
                 }`}
@@ -110,7 +111,7 @@ const UserCard = () => {
               </div>
             </div>
             {/* Claim Button */}
-            <button className="bg-gradient-to-r from-[#F43F5E] to-[#F59E0B] py-2 rounded-full w-full font-medium text-base transition-transform duration-200 active:scale-95">
+            <button className="bg-primary-gradient-2 py-2 rounded-full w-full font-medium text-base transition-transform duration-200 active:scale-95">
               Claim 5 SP
             </button>
           </div>
@@ -123,9 +124,9 @@ const UserCard = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-lg">Missions</h2>
           <div className="flex gap-2">
-            <button className="p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95">
+            <Link href={'/profile'} className="p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95">
               <ArrowUpRight color="#A1A1AA" size={16} />
-            </button>
+            </Link>
             <button
               className={`md:hidden p-3 rounded-full bg-zinc-800 transition-transform duration-150 active:scale-95 ${isOpenMission ? "rotate-180" : ""
                 }`}
