@@ -55,3 +55,7 @@ export const renderWalletAddress = (
   }
   return "";
 };
+
+export const copyText = (entryText: string): void => {
+  navigator.clipboard.writeText(entryText);
+}

@@ -1,6 +1,6 @@
 import { CheckCircle, FireSimple, Info } from "@phosphor-icons/react/dist/ssr"
 import { Progress } from "antd"
-import { FireGradient } from "../icons/FireIcon"
+import { FireGradient } from "../../icons/FireIcon"
 import CustomAvatar from "@/components/CustomAvatar"
 import { renderWalletAddress } from "@/utils/string"
 import { useAccount, useEnsName, useEnsAvatar } from "wagmi"

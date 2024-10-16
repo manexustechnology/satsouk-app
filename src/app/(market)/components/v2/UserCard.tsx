@@ -5,12 +5,14 @@ import {
   CaretLeft,
   FireSimple,
   CaretDown,
+  CheckCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import Badge from "./Badge";
 import { Progress } from "@chakra-ui/react";
 import { CaretRight } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { FireGradient } from "../icons/FireIcon";
 
 const UserCard = () => {
   const [isOpenDaily, setIsOpenDaily] = useState(false);
@@ -66,47 +68,53 @@ const UserCard = () => {
             <div className="bg-zinc-800 p-3 rounded-3xl flex items-center gap-2">
               <FireSimple weight="fill" color="#FFFFFF" size={24} />
               <div className="grid grid-cols-1 gap-y-1">
-                <p className="text-xs">Day 1 reward is ready to claim</p>
+                <p className="text-xs">Day 3 reward is ready to claim</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium">5 SP</p>
-                  <span className="bg-zinc-900 text-zinc-600 text-xs p-1 rounded">
+                  <p className="text-sm font-medium">15 SP</p>
+                  {/* Unclaimed */}
+                  <span className="bg-zinc-900 text-zinc-600 text-xs py-1 px-2 rounded-[20px]">
                     Unclaimed
                   </span>
+                  {/* Claimed */}
+                  {/* <span className="bg-zinc-900 text-zinc-600 text-xs py-1 px-2 rounded-[20px] flex gap-1 items-center">
+                    <CheckCircle weight="fill" size={12} className="text-green-600" />
+                    <p className="text-white">Claimed</p>
+                  </span> */}
                 </div>
               </div>
             </div>
             {/* Day Tracker */}
             <div className="grid grid-cols-8">
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#FFFFFF" size={16} />
+                <FireGradient size={16} />
                 <p className="text-zinc-200">1</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireGradient size={16} />
                 <p className="text-zinc-200">2</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-white" />
                 <p className="text-zinc-200">3</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-zinc-600" />
                 <p className="text-zinc-200">4</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-zinc-600" />
                 <p className="text-zinc-200">5</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-zinc-600" />
                 <p className="text-zinc-200">6</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-zinc-600" />
                 <p className="text-zinc-200">7</p>
               </div>
               <div className="col-span-1 grid grid-cols-1 gap-1 place-items-center">
-                <FireSimple weight="fill" color="#52525B" size={16} />
+                <FireSimple weight="fill" size={16} className="text-zinc-600" />
                 <p className="text-zinc-200">&gt;7</p>
               </div>
             </div>
@@ -114,6 +122,10 @@ const UserCard = () => {
             <button className="bg-primary-gradient-2 py-2 rounded-full w-full font-medium text-base transition-transform duration-200 active:scale-95">
               Claim 5 SP
             </button>
+            {/* Claimed */}
+            {/* <div className="bg-zinc-800 py-2 rounded-full w-full font-medium text-base text-zinc-400 flex justify-center items-center">
+              Today’s reward claimed
+            </div> */}
           </div>
         )}
       </div>
@@ -154,9 +166,15 @@ const UserCard = () => {
                     rounded={"full"}
                   />
                 </div>
-                <div className="rounded-full p-3 text-sm font-medium text-zinc-400 bg-zinc-800 flex items-center justify-center">
-                  10 SP
-                </div>
+                {index < 2 ? (
+                  <button className="bg-primary-gradient-2 rounded-full px-3 py-2 font-medium text-sm text-white transition-transform duration-200 active:scale-95">
+                    Claim
+                  </button>
+                ) : (
+                  <div className="rounded-full px-3 py-2 text-sm font-medium text-zinc-400 bg-zinc-800 flex items-center justify-center">
+                    10 SP
+                  </div>
+                )}
               </div>
             ))}
             {/* End Mission Items */}
@@ -180,7 +198,7 @@ const UserCard = () => {
         )}
       </div>
       {/* End Missions */}
-    </section>
+    </section >
   );
 };
 

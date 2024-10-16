@@ -6,7 +6,9 @@ import { useCrypto } from "@/context/CryptoContext";
 import ProfileTabsMenu from "./ProfileTabsMenu";
 import { IProfileTabsMenuItem } from "@/types/profile";
 import { useAccount } from "wagmi";
-import { ProfilePanel } from "./ProfilePanel";
+import { ProfilePanel } from "./profile-panel/ProfilePanel";
+import { ReferralPanel } from "./profile-panel/ReferralPanel";
+import { PositionPanel } from "./profile-panel/PositionPanel";
 
 const tabList: IProfileTabsMenuItem[] = [
   {
@@ -39,19 +41,21 @@ const ProfileClientPage: React.FC = () => {
     }
   }, [domLoaded]);
 
-  if (!domLoaded) return <></>;
-
-  if (!address) return (
-    <div className="flex justify-center items-center h-screen">
-      Page not found
-    </div>
-  )
+  if (!domLoaded || !address) return <></>;
 
   return (
     <>
       <div className="flex flex-col p-6 max-md:p-2 gap-2">
         <ProfileTabsMenu tabList={tabList} onTabChange={(index) => setSelectedTabIndex(index)} selectedTabIndex={selectedTabIndex} />
-        <ProfilePanel />
+        {tabList[selectedTabIndex].slug === 'profile' && (
+          <ProfilePanel />
+        )}
+        {tabList[selectedTabIndex].slug === 'referral' && (
+          <ReferralPanel />
+        )}
+        {tabList[selectedTabIndex].slug === 'positions' && (
+          <PositionPanel />
+        )}
       </div>
     </>
   );

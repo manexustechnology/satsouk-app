@@ -137,7 +137,6 @@ const MarketListCard: React.FC = ({
               <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-8 flex flex-col justify-center items-center max-md:px-9 max-md:py-16">
                 <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
                 <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14" onClick={() => setGetUpdatesModalOpen(true)}>Get updates</button>
-                <GetUpdatesModal isOpen={getUpdatesModalOpen} onClose={() => setGetUpdatesModalOpen(false)} />
               </div>
             </div>
             <Pagination
@@ -151,22 +150,20 @@ const MarketListCard: React.FC = ({
               onFirstPage={onFirstPage} />
           </div>
         ) : (
-          <div className="p-6">
-            <div className="h-[500px] flex flex-col gap-4 justify-center items-center">
-              <Image
-                src={'/images/empty-search-icon.png'}
-                width={100}
-                height={100}
-                alt="empty icon"
-              />
-              <div className="flex flex-col gap-2 w-1/3 justify-center items-center text-center">
-                <p className="text-sm font-medium text-white">We couldn&apos;t find anything</p>
-                <p className="text-xs text-zinc-500">Try using different keywords to find what you&apos;re looking for.</p>
-              </div>
-            </div>
+          <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-16 flex flex-col justify-center items-center">
+            <Image
+              src="/images/magnifying-glass.png"
+              width={1000}
+              height={1000}
+              style={{ width: '200px', height: '200px' }}
+              alt="Empty Image"
+            />
+            <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
+            <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14" onClick={() => setGetUpdatesModalOpen(true)}>Get updates</button>
           </div>
         )}
       </div>
+      <GetUpdatesModal isOpen={getUpdatesModalOpen} onClose={() => setGetUpdatesModalOpen(false)} />
       {/* Will be used later */}
       {/* <button className="flex justify-center items-center bg-zinc-950 rounded-[24px] gap-3 p-2.5 cursor-pointer text-zinc-400">
         <p className="text-base">Load more</p>
