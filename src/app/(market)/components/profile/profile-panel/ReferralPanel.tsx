@@ -1,10 +1,37 @@
-import { copyText } from "@/utils/string";
+import { copyText, renderWalletAddress } from "@/utils/string";
 import { CheckCircle, Copy, TelegramLogo, XLogo } from "@phosphor-icons/react/dist/ssr"
+import Image from "next/image";
 import { useRef, useState } from "react"
+import Pagination from "../../v2/Pagination";
+import useResizeWindow from "@/app/(market)/hooks/useResizeWindow";
 
 export const ReferralPanel: React.FC = () => {
+  const [page, setPage] = useState<number>(1);
+  const { windowSize } = useResizeWindow();
   const referralLinkRef = useRef(null);
   const [isReferralCopied, setIsReferralCopied] = useState<boolean>(false);
+
+  const onPageChange = (pageSelected: number) => setPage(pageSelected)
+
+  const onPageBack = (currentPage: number) => {
+    const result = currentPage - 1
+
+    if (result === 0) return
+
+    setPage(currentPage - 1)
+  }
+
+  const onPageNext = (currentPage: number) => {
+    const result = currentPage + 1
+
+    if (result > 15) return
+
+    setPage(currentPage + 1)
+  }
+
+  const onLastPage = () => setPage(15)
+
+  const onFirstPage = () => setPage(1)
 
   const copyReferralLink = () => {
     copyText((referralLinkRef.current as any)?.innerHTML);
@@ -68,6 +95,73 @@ export const ReferralPanel: React.FC = () => {
           </p>
         </div>
       </div>
+      <div className="bg-zinc-900 rounded-[32px] flex flex-col gap-2 p-5">
+        <p className="text-zinc-400 text-lg">Referred User List</p>
+        {/* Available Referral List */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+          <div className="flex justify-between items-center border-b-[1px] border-b-zinc-800 py-3">
+            <p className="text-zinc-300 text-sm">{renderWalletAddress('0xd36aab03676f519ed49c1863cc6003e9bbb1e1f4', 10)}</p>
+            <p className="text-zinc-400 text-sm">October 25, 2019</p>
+          </div>
+        </div>
+        {/* Empty Referral List */}
+        {/* <div className="flex flex-col items-center mb-6">
+          <Image
+            src="/images/empty-folder.png"
+            width={1000}
+            height={1000}
+            style={{ width: '200px', height: '200px' }}
+            alt="Empty Image"
+          />
+          <p className="text-base mb-3 font-medium text-center">You have no referred users</p>
+        </div> */}
+      </div>
+      {/* Pagination */}
+      <Pagination
+        isMobile={windowSize?.width <= 768}
+        totalPage={15}
+        currentPage={page}
+        onPageChange={onPageChange}
+        onBack={onPageBack}
+        onNext={onPageNext}
+        onLastPage={onLastPage}
+        onFirstPage={onFirstPage} />
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import { ProfilePanel } from "./profile-panel/ProfilePanel";
 import { ReferralPanel } from "./profile-panel/ReferralPanel";
 import { PositionPanel } from "./profile-panel/PositionPanel";
+import { useSearchParams } from "next/navigation";
 
 const tabList: IProfileTabsMenuItem[] = [
   {
@@ -31,9 +32,16 @@ const ProfileClientPage: React.FC = () => {
   const [domLoaded, setDomLoaded] = useState(false);
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
 
+  const searchParams = useSearchParams();
+  const tabsParams = searchParams.get('tabs');
+
   useEffect(() => {
     setDomLoaded(true);
   }, []);
+
+  useEffect(() => {
+    setSelectedTabIndex(Number(tabsParams) || 0);
+  }, [tabsParams]);
 
   useEffect(() => {
     if (domLoaded) {

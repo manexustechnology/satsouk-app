@@ -4,7 +4,6 @@ import Image from "next/image";
 import Pagination from "../../v2/Pagination";
 import useResizeWindow from "@/app/(market)/hooks/useResizeWindow";
 import { useState } from "react";
-import Link from "next/link";
 
 export const PositionPanel: React.FC = () => {
   const [page, setPage] = useState<number>(1);

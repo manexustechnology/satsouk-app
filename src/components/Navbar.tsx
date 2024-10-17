@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import { BellSimple, CaretDown, List, MagnifyingGlass, SquaresFour, Trophy, Wallet } from "@phosphor-icons/react/dist/ssr";
+import { BellSimple, CaretDown, Coins, List, MagnifyingGlass, SquaresFour, Trophy, Wallet } from "@phosphor-icons/react/dist/ssr";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import Link from "next/link";
@@ -96,25 +96,33 @@ const Navbar: React.FC = () => {
               </span>
             </Link>
             <div className="flex items-center gap-2 w-fit max-md:hidden">
-              <div className="flex items-center">
+              <div className="flex items-center z-10">
                 <div className={`p-3 bg-zinc-800 rounded-full transition-all duration-150 ${cn(showSearchInput ? 'opacity-0 w-0 hidden' : 'opacity-100 w-auto')}`} role="button" onClick={toggleShowSearchInput}>
                   <MagnifyingGlass weight="bold" size={14} className="text-zinc-400" />
                 </div>
-                <InputGroup className={`w-full transition-all duration-150 ${cn(showSearchInput ? 'max-w-[360px] opacity-100' : 'max-w-[0] opacity-0 hidden')}`} bg='zinc.800' rounded='full'>
+                <InputGroup className={`w-full transition-all duration-150 ${cn(showSearchInput ? 'max-w-[360px] opacity-100' : 'max-w-[0] w-0 opacity-0 hidden')}`} bg='zinc.800' rounded='full'>
                   <InputLeftElement pointerEvents='none'>
                     <MagnifyingGlass weight="bold" size={14} className="text-zinc-400" />
                   </InputLeftElement>
-                  <Input type='text' onBlur={toggleShowSearchInput} ref={searchRef} placeholder='Search markets' onChange={(e) => debounceSearchInput(e.target.value)} pl={10} fontSize='sm' rounded='full' border="none" className="!placeholder-zinc-600" />
+                  <Input type='text' onBlur={toggleShowSearchInput} ref={searchRef} placeholder='Search markets' onChange={(e) => debounceSearchInput(e.target.value)} pl={10} fontSize='sm' rounded='full' border="none" className={cn(
+                    '!placeholder-zinc-600',
+                    showSearchInput ? '!w-auto' : '!w-0 cursor-default'
+                  )} />
                 </InputGroup>
               </div>
-              <Link href="/" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full " + cn(pathname === '/' ? 'border border-zinc-400' : '')}>
+              <Link href="/" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full z-20 " + cn(pathname === '/' ? 'border border-zinc-400' : '')}>
                 <SquaresFour weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
                 <p className="text-base font-medium text-zinc-400">Markets</p>
               </Link>
-              <Link href="/" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full " + cn(pathname === '/leaderboards' ? 'border border-zinc-400' : '')}>
+              <Link href="/profile?tabs=2" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full " + cn(pathname === '/leaderboards' ? 'border border-zinc-400' : '')}>
+                <Coins weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
+                <p className="text-base font-medium text-zinc-400">Positions</p>
+              </Link>
+              {/* Will be used later */}
+              {/* <Link href="#" className={"flex items-center gap-2 bg-zinc-800 px-3 py-2 rounded-full " + cn(pathname === '/leaderboards' ? 'border border-zinc-400' : '')}>
                 <Trophy weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
                 <p className="text-base font-medium text-zinc-400">Leaderboards</p>
-              </Link>
+              </Link> */}
             </div>
           </div>
           <div className="flex justify-end items-center w-1/3 gap-3 max-md:w-full mr-2.5 md:mr-0">
@@ -160,10 +168,15 @@ const Navbar: React.FC = () => {
             <SquaresFour weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
             <p className="text-base font-medium text-zinc-400">Markets</p>
           </Link>
-          <Link href="/" className={"flex items-center gap-2 bg-zinc-800 p-3 rounded-full"} onClick={() => setShowMenuMobile(prev => !prev)}>
+          <Link href="/profile?tabs=2" className={"flex items-center gap-2 bg-zinc-800 p-3 rounded-full"} onClick={() => setShowMenuMobile(prev => !prev)}>
+            <Coins weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
+            <p className="text-base font-medium text-zinc-400">Positions</p>
+          </Link>
+          {/* Will be used later */}
+          {/* <Link href="#" className={"flex items-center gap-2 bg-zinc-800 p-3 rounded-full"} onClick={() => setShowMenuMobile(prev => !prev)}>
             <Trophy weight="fill" color="#A1A1AA" size={16} width={16} height={16} />
             <p className="text-base font-medium text-zinc-400">Leaderboards</p>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>
