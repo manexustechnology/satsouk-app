@@ -51,9 +51,9 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({
               is still in its early stages of development.
             </p>
             <p className="font-normal text-[13px] text-zinc-400">
-              While we're excited to bring this to you, there may be some
+              While we&apos;re excited to bring this to you, there may be some
               technical issues, and certain features might not be fully
-              developed or may not cover all edge cases just yet. We're working
+              developed or may not cover all edge cases just yet. We&apos;re working
               hard to improve everything, and your feedback is incredibly
               valuable in helping us make this the best experience possible.
             </p>
