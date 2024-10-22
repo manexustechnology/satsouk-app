@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 import { featureFlag } from "@/utils/feature-flag";
-import {
-  bettingContractAddress,
-  bobMainnet,
-  bobSepoliaTestnet,
-} from "@/config/network";
+import { bettingContractAddress, bobMainnet } from "@/config/network";
 import { bettingContractAbi } from "../../../../contracts/main";
 import { Contract, formatEther, JsonRpcProvider } from "ethers";
 

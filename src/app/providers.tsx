@@ -11,14 +11,31 @@ import { darkTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import CustomAvatar from '@/components/CustomAvatar'
 import { CryptoProvider } from '@/context/CryptoContext'
 import { DisclaimerProvider } from '@/context/DisclaimerContext'
+import { DynamicContextProvider, DynamicUserProfile, DynamicWagmiConnector, EthereumWalletConnectors } from '@/lib/dynamic'
+import { dynamicConstants } from '@/constants/dynamic'
+import { dynamicBobMainnet, dynamicBobSepoliaTestnet } from '@/config/network'
+import { featureFlag } from '@/utils/feature-flag'
 
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const dynamicActiveChain = featureFlag("NEXT_PUBLIC_USE_BOB_MAINNET")
+    ? dynamicBobMainnet
+    : dynamicBobSepoliaTestnet;
+  const evmNetworks = [dynamicActiveChain]
+
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
+    <DynamicContextProvider
+      theme='dark'
+      settings={{
+        environmentId: dynamicConstants.environmentId,
+        walletConnectors: [EthereumWalletConnectors],
+        overrides: { evmNetworks: evmNetworks as any }
+      }}
+    >
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          {/* <RainbowKitProvider
           theme={darkTheme({
             accentColor: '#27272A',
             accentColorForeground: 'white',
@@ -27,18 +44,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
             overlayBlur: 'small',
           })}
           avatar={CustomAvatar}
-        >
-          <ChakraProvider theme={chakraTheme}>
-            <AntdRegistry>
-              <CryptoProvider>
-                <DisclaimerProvider>
-                  {children}
-                </DisclaimerProvider>
-              </CryptoProvider>
-            </AntdRegistry>
-          </ChakraProvider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+        > */}
+          <DynamicWagmiConnector>
+            <ChakraProvider theme={chakraTheme}>
+              <AntdRegistry>
+                <CryptoProvider>
+                  <DisclaimerProvider>
+                    {children}
+                    <DynamicUserProfile variant='modal' />
+                  </DisclaimerProvider>
+                </CryptoProvider>
+              </AntdRegistry>
+            </ChakraProvider>
+          </DynamicWagmiConnector>
+          {/* </RainbowKitProvider> */}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </DynamicContextProvider>
   )
 }
