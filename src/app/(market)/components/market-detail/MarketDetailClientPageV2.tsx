@@ -1,17 +1,16 @@
 "use client"
 
 import { formatNumber, formatNumberToUSD } from "@/utils/string"
-import { ArrowLeft, CalendarBlank, HeartStraight } from "@phosphor-icons/react/dist/ssr"
+import { ArrowLeft, CalendarBlank, HeartStraight, Wallet } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import ProgressBar from "../v2/ProgressBar"
 import VoteAction from "../v2/VoteAction"
 import Badge from "../v2/Badge"
 import CardSummary from "../v2/CardSummary"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
-import '@/app/(market)/styles/marketDetailClientPageV2.css'
 import { useAccount } from "wagmi"
 import { cn } from "@/utils/cn"
 import UserCard from "../v2/UserCard"
+import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core"
 
 const MarketDetailClientPageV2 = () => {
   const { address } = useAccount()
@@ -105,9 +104,18 @@ const MarketDetailClientPageV2 = () => {
                 Buy
               </button>
             ) : (
-              <div id="connect-button" className="relative">
-                <ConnectButton />
-              </div>
+              <>
+                <button className="hidden md:block bg-gradient-to-r from-[#F43F5E] to-[#F59E0B] py-2 rounded-full w-full font-medium text-base opacity-40 cursor-not-allowed" disabled={true} aria-disabled={true}>
+                  Buy
+                </button>
+                <div id="connect-button" className="relative w-full">
+                  <DynamicConnectButton buttonClassName="!bg-primary-gradient-2 rounded-full px-3 py-2 w-full flex justify-center md:hidden">
+                    <span className="text-sm font-medium">
+                      Connect Wallet
+                    </span>
+                  </DynamicConnectButton>
+                </div>
+              </>
             )}
           </div>
         </div>
