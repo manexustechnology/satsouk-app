@@ -7,11 +7,16 @@ import { useCrypto } from "@/context/CryptoContext";
 import MarketListCard from "./v2/MarketListCard";
 import UserCard from "./v2/UserCard";
 import { cn } from "@/utils/cn";
+import { useDynamicContext, useIsLoggedIn, useTelegramLogin } from "@dynamic-labs/sdk-react-core";
 
 const MarketClientPage: React.FC = () => {
+  const { sdkHasLoaded } = useDynamicContext();
   const { address } = useAccount();
   const { fetchPrice } = useCrypto();
   const [domLoaded, setDomLoaded] = useState(false);
+  const { telegramSignIn, isAuthWithTelegram } = useTelegramLogin();
+  const isLoggedIn = useIsLoggedIn();
+  const [alreadyCheckTelegramAccount, setAlreadyCheckTelegramAccount] = useState(false);
 
   useEffect(() => {
     setDomLoaded(true);
@@ -22,6 +27,22 @@ const MarketClientPage: React.FC = () => {
       fetchPrice("eth");
     }
   }, [domLoaded]);
+
+  useEffect(() => {
+    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount) {
+      checkTelegramConnection();
+    }
+  }, [domLoaded, isLoggedIn, sdkHasLoaded]);
+
+  const checkTelegramConnection = async () => {
+    const isLinkedWithTelegram = await isAuthWithTelegram();
+
+    if (!isLoggedIn && isLinkedWithTelegram) {
+      await telegramSignIn();
+    }
+
+    setAlreadyCheckTelegramAccount(true);
+  };
 
   if (!domLoaded) return <></>;
 
