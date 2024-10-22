@@ -1,16 +1,8 @@
 "use client";
 
 // import MarketListCard from "./MarketListCard";
-import { useAccount, useReadContract, useReadContracts } from "wagmi";
+import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
-import { featureFlag } from "@/utils/feature-flag";
-import {
-  bettingContractAddress,
-  bobMainnet,
-  bobSepoliaTestnet,
-} from "@/config/network";
-import { bettingContractAbi } from "../../../../contracts/main";
-import { transformMarketItemFromContract } from "@/transform/market";
 import { useCrypto } from "@/context/CryptoContext";
 import MarketListCard from "./v2/MarketListCard";
 import UserCard from "./v2/UserCard";
