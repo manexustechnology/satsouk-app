@@ -8,7 +8,6 @@ import MarketListCard from "./v2/MarketListCard";
 import UserCard from "./v2/UserCard";
 import { cn } from "@/utils/cn";
 import { useDynamicContext, useIsLoggedIn, useTelegramLogin } from "@dynamic-labs/sdk-react-core";
-import { useLaunchParams } from '@telegram-apps/sdk-react';
 
 const MarketClientPage: React.FC = () => {
   const { sdkHasLoaded } = useDynamicContext();
@@ -18,7 +17,6 @@ const MarketClientPage: React.FC = () => {
   const { telegramSignIn, isAuthWithTelegram } = useTelegramLogin();
   const isLoggedIn = useIsLoggedIn();
   const [alreadyCheckTelegramAccount, setAlreadyCheckTelegramAccount] = useState(false);
-  const lp = useLaunchParams();
 
   useEffect(() => {
     setDomLoaded(true);
@@ -31,10 +29,10 @@ const MarketClientPage: React.FC = () => {
   }, [domLoaded]);
 
   useEffect(() => {
-    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount) {
+    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && (window as any)?.Telegram && sessionStorage) {
       checkTelegramConnection();
     }
-  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount]);
+  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, (window as any)?.Telegram, sessionStorage]);
 
   const checkTelegramConnection = async () => {
     const isLinkedWithTelegram = await isAuthWithTelegram();
@@ -42,7 +40,7 @@ const MarketClientPage: React.FC = () => {
     if (!isLoggedIn) {
       if (isLinkedWithTelegram) {
         await telegramSignIn();
-      } else if (lp.version) {
+      } else {
         await telegramSignIn({ forceCreateUser: true })
       }
     }
