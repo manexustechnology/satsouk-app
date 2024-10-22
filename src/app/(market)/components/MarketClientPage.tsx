@@ -17,22 +17,54 @@ const MarketClientPage: React.FC = () => {
   const { telegramSignIn, isAuthWithTelegram } = useTelegramLogin();
   const isLoggedIn = useIsLoggedIn();
   const [alreadyCheckTelegramAccount, setAlreadyCheckTelegramAccount] = useState(false);
+  const [telegramWindowLoaded, setTelegramWindowLoaded] = useState(false);
+  const [sessionStorageLoaded, setSessionStorageLoaded] = useState(false);
 
   useEffect(() => {
     setDomLoaded(true);
   }, []);
 
   useEffect(() => {
+    let intervalIdWindow: NodeJS.Timeout;
+    let intervalIdSessionStorage: NodeJS.Timeout;
+
     if (domLoaded) {
       fetchPrice("eth");
+
+      // telegram
+      intervalIdWindow = setInterval(() => {
+        if (window && (window as any)?.Telegram) {
+          clearInterval(intervalIdWindow);
+          setTelegramWindowLoaded(true);
+        }
+      }, 500);
+      setTimeout(() => {
+        clearInterval(intervalIdWindow);
+      }, 60 * 1000);
+
+      // session storage
+      intervalIdSessionStorage = setInterval(() => {
+        if (sessionStorage) {
+          clearInterval(intervalIdSessionStorage);
+          setSessionStorageLoaded(true);
+        }
+      }, 500);
+      setTimeout(() => {
+        clearInterval(intervalIdSessionStorage);
+      }, 60 * 1000);
     }
+
+    return () => {
+      clearInterval(intervalIdWindow);
+      clearInterval(intervalIdSessionStorage);
+    };
   }, [domLoaded]);
 
   useEffect(() => {
-    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && (window as any)?.Telegram && sessionStorage) {
+    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && telegramWindowLoaded && sessionStorageLoaded) {
       checkTelegramConnection();
     }
-  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, (window as any)?.Telegram, sessionStorage]);
+  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, telegramWindowLoaded, sessionStorageLoaded]);
 
   const checkTelegramConnection = async () => {
     const isLinkedWithTelegram = await isAuthWithTelegram();
