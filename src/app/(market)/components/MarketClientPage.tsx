@@ -31,10 +31,10 @@ const MarketClientPage: React.FC = () => {
   }, [domLoaded]);
 
   useEffect(() => {
-    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && lp.version) {
+    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount) {
       checkTelegramConnection();
     }
-  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, lp.version]);
+  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount]);
 
   const checkTelegramConnection = async () => {
     const isLinkedWithTelegram = await isAuthWithTelegram();
@@ -42,7 +42,7 @@ const MarketClientPage: React.FC = () => {
     if (!isLoggedIn) {
       if (isLinkedWithTelegram) {
         await telegramSignIn();
-      } else {
+      } else if (lp.version) {
         await telegramSignIn({ forceCreateUser: true })
       }
     }
