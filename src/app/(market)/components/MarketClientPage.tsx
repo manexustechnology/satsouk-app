@@ -8,17 +8,20 @@ import MarketListCard from "./v2/MarketListCard";
 import UserCard from "./v2/UserCard";
 import { cn } from "@/utils/cn";
 import { useDynamicContext, useIsLoggedIn, useTelegramLogin } from "@dynamic-labs/sdk-react-core";
+import { useSearchParams } from "next/navigation";
 
 const MarketClientPage: React.FC = () => {
-  const { sdkHasLoaded } = useDynamicContext();
+  const { sdkHasLoaded, user } = useDynamicContext();
   const { address } = useAccount();
   const { fetchPrice } = useCrypto();
   const [domLoaded, setDomLoaded] = useState(false);
   const { telegramSignIn, isAuthWithTelegram } = useTelegramLogin();
   const isLoggedIn = useIsLoggedIn();
   const [alreadyCheckTelegramAccount, setAlreadyCheckTelegramAccount] = useState(false);
-  const [telegramWindowLoaded, setTelegramWindowLoaded] = useState(false);
   const [sessionStorageLoaded, setSessionStorageLoaded] = useState(false);
+
+  const searchParams = useSearchParams();
+  const telegramAuthToken = searchParams.get('telegramAuthToken');
 
   useEffect(() => {
     setDomLoaded(true);
@@ -31,17 +34,6 @@ const MarketClientPage: React.FC = () => {
     if (domLoaded) {
       fetchPrice("eth");
 
-      // telegram
-      intervalIdWindow = setInterval(() => {
-        if (window && (window as any)?.Telegram) {
-          clearInterval(intervalIdWindow);
-          setTelegramWindowLoaded(true);
-        }
-      }, 500);
-      setTimeout(() => {
-        clearInterval(intervalIdWindow);
-      }, 60 * 1000);
-
       // session storage
       intervalIdSessionStorage = setInterval(() => {
         if (sessionStorage) {
@@ -51,7 +43,7 @@ const MarketClientPage: React.FC = () => {
       }, 500);
       setTimeout(() => {
         clearInterval(intervalIdSessionStorage);
-      }, 60 * 1000);
+      }, 600 * 1000);
     }
 
     return () => {
@@ -61,19 +53,32 @@ const MarketClientPage: React.FC = () => {
   }, [domLoaded]);
 
   useEffect(() => {
-    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && telegramWindowLoaded && sessionStorageLoaded) {
+    console.log('=================');
+    console.log('domLoaded', domLoaded);
+    console.log('sdkHasLoaded', sdkHasLoaded);
+    console.log('isLoggedIn', isLoggedIn);
+    console.log('alreadyCheckTelegramAccount', alreadyCheckTelegramAccount);
+    console.log('sessionStorageLoaded', sessionStorageLoaded);
+    console.log('=================');
+    if (domLoaded && sdkHasLoaded && !isLoggedIn && !alreadyCheckTelegramAccount && sessionStorageLoaded && !user && telegramAuthToken) {
       checkTelegramConnection();
     }
-  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, telegramWindowLoaded, sessionStorageLoaded]);
+  }, [domLoaded, isLoggedIn, sdkHasLoaded, alreadyCheckTelegramAccount, sessionStorageLoaded, user, telegramAuthToken]);
 
   const checkTelegramConnection = async () => {
     const isLinkedWithTelegram = await isAuthWithTelegram();
 
-    if (!isLoggedIn) {
-      if (isLinkedWithTelegram) {
-        await telegramSignIn();
-      } else {
+    console.log('isLinkedWithTelegram', isLinkedWithTelegram);
+    console.log('window', (window as any).Telegram);
+    console.log('user', user);
+
+    if (isLinkedWithTelegram) {
+      await telegramSignIn();
+    } else {
+      try {
         await telegramSignIn({ forceCreateUser: true })
+      } catch (error) {
+        console.error(error);
       }
     }
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 import MarketTabsMenu from "./MarketTabsMenu";
 import { IMarketDataItem, IMarketTabsMenuItem } from "@/types/market";
 import { useEffect, useState } from "react";
@@ -10,10 +9,7 @@ import { MarketListData } from "@/app/data/market";
 import { cn } from "@/utils/cn";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { bettingContractAddress } from "@/config/network";
-import { bettingContractAbi } from "../../../../contracts/main";
-import { useAccount, useReadContract, useReadContracts } from "wagmi";
-import { transformMarketItemFromContract } from "@/transform/market";
+import { useAccount } from "wagmi";
 import { getBettingList, getMyPositionList } from "@/contract-call/market";
 import { IMyPositionDataItem } from "@/types/my-position";
 import { useDisclaimer } from "@/context/DisclaimerContext";

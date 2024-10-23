@@ -13,6 +13,7 @@
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
     "@dynamic-labs/ethereum": "^3.4.2",
+    "@dynamic-labs/global-wallet": "^3.4.2",
     "@dynamic-labs/sdk-react-core": "^3.4.2",
     "@dynamic-labs/wagmi-connector": "^3.4.2",
     "@emotion/react": "^11.13.0",
@@ -28,6 +29,7 @@
     "ethers": "^6.13.2",
     "framer-motion": "^11.3.21",
     "jose": "^5.8.0",
+    "jsonwebtoken": "^8.5.1",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
@@ -40,6 +42,7 @@
     "wagmi": "^2.12.22"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
