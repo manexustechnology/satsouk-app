@@ -1,7 +1,7 @@
 'use client';
 
 import { IMarketDataItem } from "@/types/market";
-import { formatNumber, formatNumberToUSD } from "@/utils/string";
+import { capitalizeWords, formatNumber, formatNumberToUSD } from "@/utils/string";
 import { CaretRight, HeartStraight } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -30,7 +30,7 @@ const MarketItem: React.FC<MarketItemProps> = ({
 
   const renderBinary = (): React.ReactNode => {
     return (
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 w-full justify-end">
           <ProgressBar
             totalYes={data.options?.[0]?.percentage || 50}
@@ -38,6 +38,14 @@ const MarketItem: React.FC<MarketItemProps> = ({
             volumeYes={(data.options?.[0]?.volume || 0) * (price || 0)}
             volumeNo={(data.options?.[1]?.volume || 0) * (price || 0)}
           />
+        </div>
+        <div className="flex gap-2 w-full justify-between">
+          <button className="bg-green-950 text-green-500 py-3 px-5 w-full h-auto rounded-xl text-sm font-medium hover:bg-green-900" onClick={() => handleClick('yes')}>
+            {capitalizeWords(data.options?.[0]?.label || '')}
+          </button>
+          <button className="bg-rose-950 text-rose-500 py-3 px-5 w-full h-auto rounded-xl text-sm font-medium hover:bg-rose-900" onClick={() => handleClick('no')}>
+            {capitalizeWords(data.options?.[1]?.label || '')}
+          </button>
         </div>
       </div>
     )
