@@ -102,6 +102,11 @@ const MarketListCard: React.FC = ({
                 if (item.type === 'selection') {
                   return null;
                 }
+
+                if (item.status.toLowerCase() !== 'active') {
+                  return null;
+                }
+
                 return (
                   <MarketItem
                     data={item}
