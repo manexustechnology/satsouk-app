@@ -1,3 +1,6 @@
+import { JWTConfig } from "@/config/jwt";
+import { SignJWT } from "jose";
+
 export const capitalizeWords = (str: string): string => {
   if (!str) return str;
 
@@ -59,3 +62,17 @@ export const renderWalletAddress = (
 export const copyText = (entryText: string): void => {
   navigator.clipboard.writeText(entryText);
 }
+
+export const generateJWTBearerToken = async (walletAddress: string, referralCode: string) => {
+  const alg = "HS256";
+  const token = await new SignJWT({ walletAddress, referralCode })
+    .setProtectedHeader({ alg })
+    .setIssuedAt()
+    .setIssuedAt()
+    .setIssuer("satsouk")
+    .setAudience("satsouk")
+    .setExpirationTime("5m")
+    .sign(Buffer.from(JWTConfig.secret));
+
+  return token;
+};
