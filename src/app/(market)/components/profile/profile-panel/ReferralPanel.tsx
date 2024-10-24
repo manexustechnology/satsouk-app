@@ -7,31 +7,10 @@ import useResizeWindow from "@/app/(market)/hooks/useResizeWindow";
 
 export const ReferralPanel: React.FC = () => {
   const [page, setPage] = useState<number>(1);
-  const { windowSize } = useResizeWindow();
   const referralLinkRef = useRef(null);
   const [isReferralCopied, setIsReferralCopied] = useState<boolean>(false);
 
   const onPageChange = (pageSelected: number) => setPage(pageSelected)
-
-  const onPageBack = (currentPage: number) => {
-    const result = currentPage - 1
-
-    if (result === 0) return
-
-    setPage(currentPage - 1)
-  }
-
-  const onPageNext = (currentPage: number) => {
-    const result = currentPage + 1
-
-    if (result > 15) return
-
-    setPage(currentPage + 1)
-  }
-
-  const onLastPage = () => setPage(15)
-
-  const onFirstPage = () => setPage(1)
 
   const copyReferralLink = () => {
     copyText((referralLinkRef.current as any)?.innerHTML);
@@ -154,14 +133,9 @@ export const ReferralPanel: React.FC = () => {
       </div>
       {/* Pagination */}
       <Pagination
-        isMobile={windowSize?.width <= 768}
-        totalPage={15}
         currentPage={page}
-        onPageChange={onPageChange}
-        onBack={onPageBack}
-        onNext={onPageNext}
-        onLastPage={onLastPage}
-        onFirstPage={onFirstPage} />
+        totalPages={15}
+        onPageChange={onPageChange} />
     </div>
   )
 }
