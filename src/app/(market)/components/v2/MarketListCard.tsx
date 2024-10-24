@@ -12,7 +12,6 @@ import { getBettingList, getMyPositionList } from "@/contract-call/market";
 import { IMyPositionDataItem } from "@/types/my-position";
 import { useDisclaimer } from "@/context/DisclaimerContext";
 import Pagination from "./Pagination";
-import useResizeWindow from "../../hooks/useResizeWindow";
 import GetUpdatesModal from "../../modals/GetUpdatesModal";
 
 const tabList: IMarketTabsMenuItem[] = [
@@ -39,7 +38,7 @@ const tabList: IMarketTabsMenuItem[] = [
 
 const MarketListCard: React.FC = ({
 }) => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { isAcceptDisclaimerRisk } = useDisclaimer();
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
   const searchParams = useSearchParams();
@@ -48,7 +47,6 @@ const MarketListCard: React.FC = ({
   const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
   const [getUpdatesModalOpen, setGetUpdatesModalOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const { windowSize } = useResizeWindow();
 
   useEffect(() => {
     if (search && search.length > 0) {
@@ -72,26 +70,6 @@ const MarketListCard: React.FC = ({
   }
 
   const onPageChange = (pageSelected: number) => setPage(pageSelected)
-
-  const onPageBack = (currentPage: number) => {
-    const result = currentPage - 1
-
-    if (result === 0) return
-
-    setPage(currentPage - 1)
-  }
-
-  const onPageNext = (currentPage: number) => {
-    const result = currentPage + 1
-
-    if (result > 15) return
-
-    setPage(currentPage + 1)
-  }
-
-  const onLastPage = () => setPage(15)
-
-  const onFirstPage = () => setPage(1)
 
   useEffect(() => {
     if (address) {
@@ -139,14 +117,9 @@ const MarketListCard: React.FC = ({
               </div>
             </div>
             <Pagination
-              isMobile={windowSize?.width <= 768}
-              totalPage={15}
               currentPage={page}
-              onPageChange={onPageChange}
-              onBack={onPageBack}
-              onNext={onPageNext}
-              onLastPage={onLastPage}
-              onFirstPage={onFirstPage} />
+              totalPages={15}
+              onPageChange={onPageChange} />
           </div>
         ) : (
           <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-16 flex flex-col justify-center items-center">
