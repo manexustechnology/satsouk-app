@@ -24,11 +24,7 @@ export default function RootLayout({
       )}>
         <Toaster position="bottom-left" />
         <Providers>
-          <Navbar />
-          {/* <div className="absolute top-0 left-[50%] w-full h-screen max-w-[1238px] max-h-[708px] translate-x-[-50%] translate-y-[-50%] bg-primary-gradient opacity-25 rounded-[100%] blur-3xl"></div> */}
-          <div className="max-w-7xl mt-[74px] inset-0 m-auto">
-            {children}
-          </div>
+          {children}
         </Providers>
       </body>
     </html>
