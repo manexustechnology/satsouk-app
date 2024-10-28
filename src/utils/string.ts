@@ -43,12 +43,19 @@ export const formatNumberToUSD = (value: number): string => {
   return `$${formatNumber(value)}`;
 };
 
-export const renderWalletAddress = (address?: string | null): string => {
+export const renderWalletAddress = (
+  address?: string | null,
+  length = 2
+): string => {
   if (address) {
-    return `${address.substring(0, 4)}...${address.substring(
-      address.length - 3,
+    return `${address.substring(0, length + 2)}...${address.substring(
+      address.length - (length + 1),
       address.length
     )}`;
   }
   return "";
 };
+
+export const copyText = (entryText: string): void => {
+  navigator.clipboard.writeText(entryText);
+}

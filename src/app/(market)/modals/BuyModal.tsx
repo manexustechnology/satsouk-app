@@ -120,7 +120,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay bg="rgba(9, 9, 11, 0.8)" />
       <ModalContent
-        width="500px"
+        width="full"
         height="fit-content"
         backgroundColor="transparent"
         borderRadius="24px"
@@ -133,30 +133,30 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
           borderRadius="12px"
           color="#FFFFFF"
           position="absolute"
-          top="-50px"
-          right="-50px"
+          top="-35px"
+          right="15px"
           zIndex="1"
         />
-        <ModalBody width="500px" padding="0">
+        <ModalBody width="full" padding="3">
           {data && (
             <>
               <Flex
                 mb={2}
                 direction="row"
-                alignItems="start"
+                alignItems="center"
                 padding="24px"
                 gap="24px"
                 backgroundColor="#18181B"
                 borderRadius="24px"
                 width="full"
-                height="140px"
+                height="full"
               >
                 <Flex
                   direction="row"
-                  alignItems="start"
+                  alignItems="center"
                   gap="12px"
-                  width="374px"
-                  height="92px"
+                  width="full"
+                  height="fit-content"
                 >
                   <Image
                     src={data.image}
@@ -170,14 +170,14 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                     direction="column"
                     alignItems="start"
                     gap="10px"
-                    width="290px"
-                    height="92px"
+                    width="full"
+                    height="full"
                   >
                     <Flex
                       direction="row"
                       alignItems="center"
                       gap="12px"
-                      width="236px"
+                      width="full"
                       height="16px"
                     >
                       <Flex
@@ -209,7 +209,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                       direction="row"
                       alignItems="start"
                       gap="4px"
-                      width="132px"
+                      width="full"
                       height="20px"
                     >
                       <Box
@@ -278,7 +278,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                 alignItems="flex-start"
                 padding="6"
                 gap="6px"
-                width="500px"
+                width="full"
                 backgroundColor="#18181B"
                 borderRadius="24px"
               >
@@ -308,7 +308,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                   alignItems="center"
                   padding="0"
                   gap="4"
-                  width="452px"
+                  width="full"
                   height="16px"
                 >
                   <Flex
@@ -462,7 +462,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                   alignItems="flex-start"
                   padding="12px"
                   gap="10px"
-                  width="452px"
+                  width="full"
                   height="44px"
                   bg="#052E16"
                   borderRadius="12px"

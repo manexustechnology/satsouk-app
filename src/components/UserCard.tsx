@@ -1,28 +1,49 @@
 'use client';
 
-import { CaretRight, Flame, Wallet } from "@phosphor-icons/react/dist/ssr";
+import { Flame, Wallet, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { Divider } from "antd";
-import Image from "next/image";
 import { normalize } from "path";
 import { useAccount, useBalance, useEnsAvatar, useEnsName } from "wagmi";
 import CustomAvatar from "./CustomAvatar";
 import Link from "next/link";
 import { formatNumberToUSD, renderWalletAddress } from "../utils/string";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { truncateNumber } from "@/utils/number";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IMyPositionDataItem } from "@/types/my-position";
 import { getMyPositionList } from "@/contract-call/market";
 import { useCrypto } from "@/context/CryptoContext";
+import { generateToken } from "@/lib/generate-token";
+import { authApplyInviteCode, authUserInfo } from "@/app/api/user";
+import { UserData } from "@/types/user";
+import {
+  FaXTwitter,
+  FaWhatsapp,
+  FaTelegram,
+  FaLink,
+  FaCircleCheck,
+  FaRegCopy,
+  FaLinkedin,
+  FaCoins,
+} from "react-icons/fa6";
+import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 const UserCard: React.FC = () => {
   const { price } = useCrypto();
+  const searchParams = useSearchParams();
   const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
   const { address, isConnected } = useAccount();
+  const [user, setUser] = useState<UserData | null>(null);
+  const [userAddress, setUserAddress] = useState<string | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [referral, setReferral] = useState(
+    `${process.env.NEXT_PUBLIC_APP_URL}?referral_code=${user?.referralCode}`
+  );
+  const [isCopied, setIsCopied] = useState(false);
   const ensNameResult = useEnsName({
     address,
   });
+  const inviteCodeUrlParams = searchParams?.get('referral_code') || '';
 
   const { data: balance, isError, isLoading } = useBalance({
     address: address,
@@ -42,14 +63,138 @@ const UserCard: React.FC = () => {
     setMyPositionListData(data);
   }
 
+  const fetchUserAccount = async () => {
+    try {
+      const finalToken = await generateToken(userAddress);
+      const { data } = await authUserInfo({
+        headers: {
+          Authorization: `Bearer ${finalToken}`,
+        },
+      });
+
+      if (data.data) {
+        setUser(data.data);
+      }
+    } catch (error) {
+      emptyUser();
+    }
+  }
+
+  const emptyUser = () => {
+    setUser(null);
+  }
+
+  const handleRedeemCode = async () => {
+    try {
+      if (inviteCodeUrlParams != user?.referralCode) {
+        const finalToken = await generateToken(userAddress);
+        const response = await authApplyInviteCode({ inviteCode: inviteCodeUrlParams }, {
+          headers: {
+            Authorization: `Bearer ${finalToken}`,
+          },
+        });
+  
+        if (response.status === 200) {
+          toast.success('Referral code successfully applied! Welcome to Satsouk 👋', {
+            style: {
+              fontSize: '14px',
+              background: '#27272a',
+              fontWeight: 'bold',
+              border: '1px solid #7a7a7b',
+              borderRadius: '8px',
+              backgroundClip: 'padding-box', 
+              position: 'relative',
+              zIndex: 1,
+              color: 'transparent',
+              backgroundImage: 'linear-gradient(90deg, #F43F5E 25%, #F59E0B 100%)',
+              WebkitBackgroundClip: 'text', 
+              WebkitTextFillColor: 'transparent',
+            },
+          });  
+        }
+      }
+    } catch (error) {
+      console.log('Error: Failed to apply referral code. Please try again.');
+    }
+  }
+
   useEffect(() => {
     setIsLoggedIn(address ? true : false);
 
     if (address) {
       fetchMyPositionList();
     }
+
+    setUserAddress(address || null);
   }, [address])
 
+  useEffect(() => {
+    fetchUserAccount();
+  }, [userAddress])
+
+  useEffect(() => {
+    setReferral(
+      `${process.env.NEXT_PUBLIC_APP_URL}?referral_code=${
+        user?.referralCode || ""
+      }`
+    );
+
+    return () => {};
+  }, [user]);
+
+  useEffect(() => {
+    handleRedeemCode();
+  }, [inviteCodeUrlParams, user])
+
+  const renderReferralContent = useMemo(() => {
+    return (
+      <div>
+        <div className="pb-5">
+          <Divider type="horizontal" className="!m-0 border-[1px] !h-0 border-zinc-700" />
+        </div>
+        <div className="flex items-center w-full bg-zinc-900 rounded-xl p-3">
+          <div className="flex flex-col items-center gap-1 w-5/12">
+            <p className="text-xs bg-primary-gradient bg-clip-text text-transparent">Satsouk Coin</p>
+            <div className="flex">
+              <div className="flex flex-col">
+                <FaCoins className="text-xs mr-2 mt-1"/>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-sm font-medium">{Number(user?.point || '0')}</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-2/12 flex justify-center items-center">
+            <Divider type="vertical" className="!m-0 border-[1px] !h-6 border-zinc-700" />
+          </div>
+          <div className="flex flex-col items-center gap-1 w-5/12">
+            <p className="text-xs bg-primary-gradient bg-clip-text text-transparent">Referral Code</p>
+            <div className="flex">
+              <div className="flex flex-col">
+                <p className="text-sm font-medium">{user?.referralCode}</p>
+              </div>
+              <div className="flex flex-col text-xs ml-2 mt-1">
+                {isCopied ? (
+                  <FaCircleCheck/>
+                ) : (
+                  <FaRegCopy
+                    className="hover:cursor-pointer"
+                    onClick={() => {
+                      navigator.clipboard.writeText(referral);
+                      setIsCopied(true);
+                      setTimeout(() => {
+                        setIsCopied(false);
+                      }, 3000);
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }, [isCopied, referral])
 
   return (
     <div className="flex flex-col w-full">
@@ -148,6 +293,13 @@ const UserCard: React.FC = () => {
             <p className="text-sm font-medium">Your position</p>
           </Link>
         </div>
+        <div className="w-full">
+          <Link href="/votes" className="w-full flex justify-center items-center gap-1 bg-zinc-800 rounded-xl p-3">
+            <CheckCircle weight="bold" size={16} />
+            <p className="text-sm font-medium">Votes</p>
+          </Link>
+        </div>
+        {renderReferralContent}
       </div>
     </div>
   )

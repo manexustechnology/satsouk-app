@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import { fonts } from "./fonts";
 import { cn } from "@/utils/cn";
 import Navbar from "@/components/Navbar";
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: "Satsouk App",
@@ -19,14 +20,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(
         fonts.sora.className,
-        "bg-zinc-900 text-white flex flex-col items-center"
+        "bg-zinc-950 text-white"
       )}>
+        <Toaster position="bottom-left" />
         <Providers>
-          <Navbar />
-          <div className="absolute top-0 left-[50%] w-full h-screen max-w-[1238px] max-h-[708px] translate-x-[-50%] translate-y-[-50%] bg-primary-gradient opacity-25 rounded-[100%] blur-3xl"></div>
-          <div className="w-full max-w-[1238px] mt-[74px] mx-auto inset-0">
-            {children}
-          </div>
+          {children}
         </Providers>
       </body>
     </html>

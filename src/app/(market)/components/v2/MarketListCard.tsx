@@ -1,11 +1,9 @@
 'use client';
 
-import MarketTabsMenu from "./MarketTabsMenu";
+import MarketTabsMenu from "@/app/(market)/components/v2/MarketTabsMenu";
 import { IMarketDataItem, IMarketTabsMenuItem } from "@/types/market";
-import { useEffect, useState } from "react";
-import MarketItem from "./MarketItem";
-import { Divider } from "antd";
-import { MarketListData } from "@/app/data/market";
+import React, { useEffect, useState } from "react";
+import MarketItem from "@/app/(market)/components/v2/MarketItem";
 import { cn } from "@/utils/cn";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -13,6 +11,8 @@ import { useAccount } from "wagmi";
 import { getBettingList, getMyPositionList } from "@/contract-call/market";
 import { IMyPositionDataItem } from "@/types/my-position";
 import { useDisclaimer } from "@/context/DisclaimerContext";
+import Pagination from "./Pagination";
+import GetUpdatesModal from "../../modals/GetUpdatesModal";
 
 const tabList: IMarketTabsMenuItem[] = [
   {
@@ -38,13 +38,15 @@ const tabList: IMarketTabsMenuItem[] = [
 
 const MarketListCard: React.FC = ({
 }) => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { isAcceptDisclaimerRisk } = useDisclaimer();
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
   const [marketListData, setMarketListData] = useState<IMarketDataItem[]>([]);
   const [myPositionListData, setMyPositionListData] = useState<IMyPositionDataItem[]>([]);
+  const [getUpdatesModalOpen, setGetUpdatesModalOpen] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     if (search && search.length > 0) {
@@ -58,6 +60,7 @@ const MarketListCard: React.FC = ({
 
   const fetchBettingList = async () => {
     const data = await getBettingList();
+
     setMarketListData(data);
   }
 
@@ -65,6 +68,8 @@ const MarketListCard: React.FC = ({
     const data = await getMyPositionList(address as any);
     setMyPositionListData(data);
   }
+
+  const onPageChange = (pageSelected: number) => setPage(pageSelected)
 
   useEffect(() => {
     if (address) {
@@ -75,10 +80,10 @@ const MarketListCard: React.FC = ({
   let listCounter = 0;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col bg-zinc-950 rounded-[24px] gap-8 p-6">
+    <>
+      <div className="bg-zinc-950 rounded-[24px] gap-8 px-1 md:px-3">
         <MarketTabsMenu tabList={tabList} onTabChange={(index) => setSelectedTabIndex(index)} selectedTabIndex={selectedTabIndex} />
-        {marketListData?.length > 0 ? (
+        {marketListData.length > 0 ? (
           <div className="relative">
             {tabList[selectedTabIndex]?.slug === 'sports' && (
               <div className="absolute top-0 left-0 bottom-0 right-0 z-20 w-full h-full m-auto flex justify-center items-center">
@@ -86,7 +91,7 @@ const MarketListCard: React.FC = ({
               </div>
             )}
             <div className={cn(
-              "flex flex-col gap-8",
+              "grid grid-cols-3 gap-2 max-md:grid-cols-1 mb-3",
               tabList[selectedTabIndex]?.slug === 'sports' ? 'blur-md pointer-events-none' : ''
             )}>
               {marketListData.map((item, dataIndex) => {
@@ -98,51 +103,50 @@ const MarketListCard: React.FC = ({
                   return null;
                 }
 
+                if (item.status.toLowerCase() !== 'active') {
+                  return null;
+                }
+
                 return (
-                  <div className="flex flex-col gap-8" key={dataIndex}>
-                    {listCounter++ > 0 && (
-                      <Divider className="!border-zinc-800 !m-0 z-10" />
-                    )}
-                    <MarketItem data={item} showAcceptanceModal={!(myPositionListData.length > 0) && !isAcceptDisclaimerRisk} onSuccessPlaceBet={() => fetchBettingList()} />
-                  </div>
+                  <MarketItem
+                    data={item}
+                    showAcceptanceModal={!(myPositionListData.length > 0) && !isAcceptDisclaimerRisk}
+                    onSuccessPlaceBet={() => fetchBettingList()}
+                    key={dataIndex} />
                 )
               })}
-              {(tabList[selectedTabIndex]?.slug || false) && tabList[selectedTabIndex].slug !== 'sports' && (
-                <div className="relative">
-                  <div className="absolute top-0 left-0 bottom-0 right-0 z-20 w-full h-full m-auto flex justify-center items-center">
-                    <div className="rounded-xl px-4 py-2 text-white text-base bg-zinc-800">Coming soon</div>
-                  </div>
-                  <div className="flex flex-col gap-8 blur-md">
-                    <Divider className="!border-zinc-800 !m-0 z-10" />
-                    <MarketItem data={MarketListData[3]} showAcceptanceModal={!(myPositionListData.length > 0)} onSuccessPlaceBet={() => fetchBettingList()} />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="w-full p-6">
-            <div className="w-full h-[500px] flex flex-col gap-4 justify-center items-center">
-              <Image
-                src={'/images/empty-search-icon.png'}
-                width={100}
-                height={100}
-                alt="empty icon"
-              />
-              <div className="flex flex-col gap-2 w-1/3 justify-center items-center text-center">
-                <p className="text-sm font-medium text-white">We couldn&apos;t find anything</p>
-                <p className="text-xs text-zinc-500">Try using different keywords to find what you&apos;re looking for.</p>
+
+              <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-8 flex flex-col justify-center items-center max-md:px-9 max-md:py-16">
+                <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
+                <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14" onClick={() => setGetUpdatesModalOpen(true)}>Get updates</button>
               </div>
             </div>
+            <Pagination
+              currentPage={page}
+              totalPages={15}
+              onPageChange={onPageChange} />
+          </div>
+        ) : (
+          <div className="col-span-full bg-zinc-950 border border-zinc-800 rounded-3xl py-16 flex flex-col justify-center items-center">
+            <Image
+              src="/images/magnifying-glass.png"
+              width={1000}
+              height={1000}
+              style={{ width: '200px', height: '200px' }}
+              alt="Empty Image"
+            />
+            <p className="text-base mb-3 font-medium text-center">Exciting markets will be coming soon!</p>
+            <button className="rounded-full bg-white py-2 text-zinc-900 text-base font-medium px-14" onClick={() => setGetUpdatesModalOpen(true)}>Get updates</button>
           </div>
         )}
       </div>
+      <GetUpdatesModal isOpen={getUpdatesModalOpen} onClose={() => setGetUpdatesModalOpen(false)} />
       {/* Will be used later */}
       {/* <button className="flex justify-center items-center bg-zinc-950 rounded-[24px] gap-3 p-2.5 cursor-pointer text-zinc-400">
         <p className="text-base">Load more</p>
         <CaretDown weight="bold" size={16} />
       </button> */}
-    </div>
+    </>
   )
 }
 
