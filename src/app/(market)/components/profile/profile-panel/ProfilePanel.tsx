@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 export const ProfilePanel: React.FC = () => {
   const { address } = useAccount();
@@ -32,6 +33,11 @@ export const ProfilePanel: React.FC = () => {
     ? JSON.parse(localStorage.getItem("user") as string)
     : null;
   const [missions, setMission] = useState<any[]>([]);
+  const [isClaimingStreak, setIsClaimingStreak] = useState(false);
+  const [isClaimingMission, setIsClaimingMission] = useState<string | null>(
+    null
+  );
+  const [buttonText, setButtonText] = useState<{ [key: string]: string }>({});
 
   const getMissions = async () => {
     await ApiService.get("/missions", {
@@ -61,6 +67,7 @@ export const ProfilePanel: React.FC = () => {
   }, [address]);
 
   const claimStreak = async () => {
+    setIsClaimingStreak(true);
     await ApiService.post(
       "/missions/claim-streaks",
       {
@@ -88,10 +95,14 @@ export const ProfilePanel: React.FC = () => {
         } else {
           toast.error("An error occurred. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsClaimingStreak(false);
       });
   };
 
   const claimMission = async (id: string) => {
+    setIsClaimingMission(id);
     await ApiService.post(
       `/missions/complete-mission`,
       {
@@ -120,7 +131,25 @@ export const ProfilePanel: React.FC = () => {
         } else {
           toast.error("An error occurred. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsClaimingMission(null);
       });
+  };
+
+  const handleButtonClick = (missionId: string) => {
+    setButtonText((prev) => ({
+      ...prev,
+      [missionId]: "On Progress...",
+      [missionId]: "On Progress...",
+    }));
+
+    setTimeout(() => {
+      setButtonText((prev) => ({
+        ...prev,
+        [missionId]: "Ready to claim",
+      }));
+    }, 2000);
   };
 
   return (
@@ -509,7 +538,20 @@ export const ProfilePanel: React.FC = () => {
               className="bg-zinc-800 p-3 flex items-center rounded-xl gap-1.5"
             >
               <div className="w-3/4 flex flex-col justify-between gap-0.5">
-                <p className="text-sm text-white">{mission?.title}</p>
+                <p className="text-sm text-white">
+                  <Link
+                    href={
+                      mission.type === "socialmedia-twitter" ||
+                      mission.type === "socialmedia-telegram"
+                        ? mission.campaignLink || "#"
+                        : "#"
+                    }
+                    target="_blank"
+                    onClick={() => handleButtonClick(mission.id)}
+                  >
+                    {mission.title}
+                  </Link>
+                </p>
                 <p className="text-sm text-zinc-400">
                   {user?.completedMissions?.find(
                     (item: any) => item.missionId === mission.id
@@ -541,9 +583,16 @@ export const ProfilePanel: React.FC = () => {
                 ) : (
                   <button
                     onClick={() => claimMission(mission.id)}
-                    className="bg-primary-gradient-2 rounded-full w-full h-full py-4 font-medium text-sm text-white transition-transform duration-200 active:scale-95"
+                    disabled={isClaimingMission === mission.id}
+                    className={`bg-primary-gradient-2 rounded-full px-3 py-2 font-medium text-sm transition-transform duration-200 active:scale-95 ${
+                      isClaimingMission === mission.id
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "text-white"
+                    }`}
                   >
-                    Claim
+                    {isClaimingMission === mission.id
+                      ? "Claiming..."
+                      : buttonText[mission.id] || "Claim"}
                   </button>
                 )}
               </div>

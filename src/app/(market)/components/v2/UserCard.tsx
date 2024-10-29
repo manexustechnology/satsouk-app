@@ -18,7 +18,6 @@ import { useAccount } from "wagmi";
 import toast from "react-hot-toast";
 import { calculatePoints } from "@/utils/number";
 import dayjs from "dayjs";
-import { JWTConfig } from "@/config/jwt";
 
 const UserCard = () => {
   const { address } = useAccount();
@@ -27,6 +26,11 @@ const UserCard = () => {
     : null;
   const [isOpenDaily, setIsOpenDaily] = useState(false);
   const [missions, setMission] = useState<any[]>([]);
+  const [isClaimingStreak, setIsClaimingStreak] = useState(false);
+  const [isClaimingMission, setIsClaimingMission] = useState<string | null>(
+    null
+  );
+  const [buttonText, setButtonText] = useState<{ [key: string]: string }>({});
 
   const toggleAccordionDaily = () => {
     setIsOpenDaily(!isOpenDaily);
@@ -80,6 +84,7 @@ const UserCard = () => {
   }, [address]);
 
   const claimStreak = async () => {
+    setIsClaimingStreak(true);
     await ApiService.post(
       "/missions/claim-streaks",
       {
@@ -107,10 +112,14 @@ const UserCard = () => {
         } else {
           toast.error("An error occurred. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsClaimingStreak(false);
       });
   };
 
   const claimMission = async (id: string) => {
+    setIsClaimingMission(id);
     await ApiService.post(
       `/missions/complete-mission`,
       {
@@ -139,7 +148,25 @@ const UserCard = () => {
         } else {
           toast.error("An error occurred. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsClaimingMission(null);
       });
+  };
+
+  const handleButtonClick = (missionId: string) => {
+    setButtonText((prev) => ({
+      ...prev,
+      [missionId]: "On Progress...",
+      [missionId]: "On Progress...",
+    }));
+
+    setTimeout(() => {
+      setButtonText((prev) => ({
+        ...prev,
+        [missionId]: "Ready to claim",
+      }));
+    }, 2000);
   };
 
   return (
@@ -186,9 +213,9 @@ const UserCard = () => {
                   </span>
                   {/* Claimed */}
                   {/* <span className="bg-zinc-900 text-zinc-600 text-xs py-1 px-2 rounded-[20px] flex gap-1 items-center">
-                    <CheckCircle weight="fill" size={12} className="text-green-600" />
-                    <p className="text-white">Claimed</p>
-                  </span> */}
+        <CheckCircle weight="fill" size={12} className="text-green-600" />
+        <p className="text-white">Claimed</p>
+        </span> */}
                 </div>
               </div>
             </div>
@@ -292,18 +319,21 @@ const UserCard = () => {
               </div>
             </div>
             {/* Claim Button */}
-            {user?.currentLoginStreak > 0 && (
-              <button
-                className="bg-primary-gradient-2 rounded-full px-3 py-2 font-medium text-sm text-white transition-transform duration-200 active:scale-95"
-                onClick={claimStreak}
-              >
-                Claim
-              </button>
-            )}
+            <button
+              disabled={user?.currentLoginStreak === 0}
+              className={`rounded-full px-3 py-2 font-medium text-sm transition-transform duration-200 w-full ${
+                user?.currentLoginStreak === 0
+                  ? "bg-gray-400 cursor-not-allowed" // styles for disabled state
+                  : "bg-primary-gradient-2 text-white active:scale-95"
+              }`}
+              onClick={claimStreak}
+            >
+              Claim
+            </button>
             {/* Claimed */}
             {/* <div className="bg-zinc-800 py-2 rounded-full w-full font-medium text-base text-zinc-400 flex justify-center items-center">
-              Today’s reward claimed
-            </div> */}
+          Today’s reward claimed
+          </div> */}
           </div>
         )}
       </div>
@@ -338,7 +368,20 @@ const UserCard = () => {
               missions.map((mission, index) => (
                 <div key={index} className="flex gap-2 justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-white">{mission.title}</p>
+                    <p className="text-sm text-white">
+                      <Link
+                        href={
+                          mission.type === "socialmedia-twitter" ||
+                          mission.type === "socialmedia-telegram"
+                            ? mission.campaignLink || "#"
+                            : "#"
+                        }
+                        target="_blank"
+                        onClick={() => handleButtonClick(mission.id)}
+                      >
+                        {mission.title}
+                      </Link>
+                    </p>
                     <p className="text-sm text-zinc-400">
                       {user?.completedMissions?.find(
                         (item: any) => item.missionId === mission.id
@@ -371,9 +414,16 @@ const UserCard = () => {
                   ) : (
                     <button
                       onClick={() => claimMission(mission.id)}
-                      className="bg-primary-gradient-2 rounded-full px-3 py-2 font-medium text-sm text-white transition-transform duration-200 active:scale-95"
+                      disabled={isClaimingMission === mission.id}
+                      className={`bg-primary-gradient-2 rounded-full px-3 py-2 font-medium text-sm transition-transform duration-200 active:scale-95 ${
+                        isClaimingMission === mission.id
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "text-white"
+                      }`}
                     >
-                      Claim
+                      {isClaimingMission === mission.id
+                        ? "Claiming..."
+                        : buttonText[mission.id] || "Claim"}
                     </button>
                   )}
                 </div>
