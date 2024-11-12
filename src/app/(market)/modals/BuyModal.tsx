@@ -36,6 +36,10 @@ import { useAccount, useBalance, useWaitForTransactionReceipt, useWriteContract 
 import { bettingContractAbi } from "../../../../contracts/main";
 import { parseUnits } from "viem";
 import { truncateNumber } from "@/utils/number";
+import { Dropdown, MenuProps } from "antd";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import toast from "react-hot-toast";
+import { bridgeBTC } from "@/lib/bridgeBTC";
 
 interface BuyModalProps {
   isOpen: boolean;
@@ -47,13 +51,16 @@ interface BuyModalProps {
 
 const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data, optionSelected = '' }) => {
   const { address, isConnected } = useAccount();
-  const { data: balance, isError, isLoading } = useBalance({
+  const { data: evmBalance, isError, isLoading } = useBalance({
     address: address,
   });
 
   const { price } = useCrypto();
   const [isSide1, setIsSide1] = useState(true);
   const [amountBuyValue, setAmountBuyValue] = useState<string>('0');
+  const [selectedCoin, setSelectedCoin] = useState<string>('eth');
+  const { primaryWallet } = useDynamicContext();
+  const [currentBalance, setCurrentBalance] = useState<number>(0);
 
   const {
     data: hash,
@@ -68,6 +75,19 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
     });
 
   useEffect(() => {
+    if (selectedCoin === 'btc') {
+      if (primaryWallet?.connector?.key !== 'okxwallet') {
+        toast.error('Only okxwallet supported for btc');
+        setSelectedCoin('eth');
+      } else {
+        fetchBTCBalance();
+      }
+    } else {
+      setCurrentBalance(Number(truncateNumber(Number(evmBalance?.formatted || 0), 3)));
+    }
+  }, [selectedCoin, evmBalance]);
+
+  useEffect(() => {
     setIsSide1(optionSelected === data?.options?.[0]?.label);
   }, [optionSelected]);
 
@@ -77,6 +97,28 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
       onSuccessBet();
     }
   }, [isConfirmed]);
+
+  const getBTCInterface = async () => {
+    const bitcoinInterface = (window.okxwallet as any)?.bitcoin;
+
+    if (!bitcoinInterface.selectedAccount) {
+      await bitcoinInterface.connect();
+    }
+
+    return bitcoinInterface;
+  }
+
+  const fetchBTCBalance = async () => {
+    const bitcoinInterface = await getBTCInterface();
+
+    const balance = await bitcoinInterface.getBalance();
+
+    if (balance) {
+      setCurrentBalance(balance.confirmed > 0 ? balance.confirmed / (10 ** 8) : 0);
+    } else {
+      setCurrentBalance(0);
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
@@ -91,6 +133,20 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
   const handleBuyClick = async () => {
     const amount = Number(amountBuyValue);
+
+    if (selectedCoin === 'btc') {
+      const bitcoinInterface = await getBTCInterface();
+      const btcAddress = bitcoinInterface.selectedAccount.address;
+      const evmAddress = primaryWallet?.address;
+
+      if (!evmAddress) {
+        toast.error('EVM Address not found');
+        return;
+      }
+
+      await bridgeBTC({ bitcoinInterface, btcAddress, evmAddress, amount });
+    }
+
     placeBet({
       address: bettingContractAddress as `0x${string}`,
       abi: bettingContractAbi,
@@ -115,6 +171,25 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
 
     return [0, 0];
   }, [amountBuyValue, isSide1]);
+
+  const currencyItems: MenuProps['items'] = [
+    {
+      key: 'eth',
+      label: (
+        <a onClick={() => setSelectedCoin('eth')}>
+          ETH
+        </a>
+      ),
+    },
+    {
+      key: 'btc',
+      label: (
+        <a onClick={() => setSelectedCoin('btc')}>
+          BTC
+        </a>
+      ),
+    },
+  ];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -437,9 +512,17 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                     />
 
                     {/* Symbol */}
-                    <div className="px-3 rounded-r-lg bg-[#52525B] text-sm flex justify-center items-center">
-                      <span>ETH</span>
-                    </div>
+                    <Dropdown
+                      menu={{ items: currencyItems }}
+                      className="px-3 rounded-r-lg bg-[#52525B] text-sm flex justify-center items-center cursor-pointer"
+                      trigger={['click']}
+                      overlayClassName="bg-[#52525B]"
+                      overlayStyle={{
+                        zIndex: 2000,
+                      }}
+                    >
+                      <a onClick={(e) => e.preventDefault()}>{selectedCoin.toUpperCase()}</a>
+                    </Dropdown>
                   </Flex>
 
                   <div className="flex justify-between items-center w-full">
@@ -449,7 +532,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
                     <p className="font-normal text-[14px] leading-[20px] text-[#A1A1AA]">
                       {isConnected && (
                         <>
-                          <span className="text-white">Balance:</span> {Number(truncateNumber(Number(balance?.formatted || 0), 3)).toFixed(3)} {balance?.symbol}
+                          <span className="text-white">Balance:</span> {currentBalance.toFixed(8)} {selectedCoin.toUpperCase()}
                         </>
                       )}
                     </p>
@@ -513,7 +596,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
           )}
         </ModalBody>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 

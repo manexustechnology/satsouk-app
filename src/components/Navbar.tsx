@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
   const ensNameResult = useEnsName({
     address,
   });
+  const { primaryWallet } = useDynamicContext();
 
   let ensImage: string | undefined = undefined;
 
@@ -111,6 +112,10 @@ const Navbar: React.FC = () => {
     setShowMenuMobile(false);
   }
 
+  const doTest = () => {
+    console.log('primary wallet connector', primaryWallet?.connector);
+  }
+
   return (
     <nav className="relative">
       <div className="fixed w-full h-[74px] bg-black z-10 flex justify-center inset-0">
@@ -173,7 +178,7 @@ const Navbar: React.FC = () => {
           <div className="flex justify-end items-center w-1/3 gap-3 max-md:w-full mr-2.5 md:mr-0">
             {isLoggedIn && pageLoaded && (
               <>
-                <button className="bg-zinc-800 rounded-xl h-10 w-10 relative flex justify-center items-center">
+                <button className="bg-zinc-800 rounded-xl h-10 w-10 relative flex justify-center items-center" onClick={doTest}>
                   <span className="absolute -top-1 -right-1 h-4 w-4 bg-rose-500 rounded-full border-4 border-zinc-900"></span>
                   <BellSimple weight="bold" size={16} />
                 </button>

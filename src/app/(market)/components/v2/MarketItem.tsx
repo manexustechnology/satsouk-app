@@ -9,6 +9,7 @@ import BuyModal from "@/app/(market)/modals/BuyModal";
 import { useCrypto } from "@/context/CryptoContext";
 import AcceptanceRiskModal from "@/app/(market)/modals/AcceptanceRiskModal";
 import ProgressBar from "./ProgressBar";
+import { useDynamicContext, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 
 interface MarketItemProps {
   data: IMarketDataItem;
@@ -27,6 +28,8 @@ const MarketItem: React.FC<MarketItemProps> = ({
   const [isBuyModalOpen, setIsBuyModalOpen] = useState<boolean>(false);
   const [isAcceptanceRiskModalOpen, setIsAcceptanceRiskModalOpen] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<string>('');
+  const isLoggedIn = useIsLoggedIn();
+  const { setShowAuthFlow } = useDynamicContext();
 
   const renderBinary = (): React.ReactNode => {
     return (
@@ -87,12 +90,16 @@ const MarketItem: React.FC<MarketItemProps> = ({
   }
 
   const handleClick = (option: string) => {
-    if (showAcceptanceModal) {
-      setIsAcceptanceRiskModalOpen(true);
+    if (isLoggedIn) {
+      if (showAcceptanceModal) {
+        setIsAcceptanceRiskModalOpen(true);
+      } else {
+        setIsBuyModalOpen(true);
+      }
+      setOptionSelected(option);
     } else {
-      setIsBuyModalOpen(true);
+      setShowAuthFlow(true);
     }
-    setOptionSelected(option);
   }
 
   const agreeAcceptance = () => {
