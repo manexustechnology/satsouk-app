@@ -55,6 +55,8 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
     address: address,
   });
 
+  console.log('evmBalance', evmBalance);
+
   const { price } = useCrypto();
   const [isSide1, setIsSide1] = useState(true);
   const [amountBuyValue, setAmountBuyValue] = useState<string>('0');
@@ -83,7 +85,7 @@ const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, onSuccessBet, data
         fetchBTCBalance();
       }
     } else {
-      setCurrentBalance(Number(truncateNumber(Number(evmBalance?.formatted || 0), 3)));
+      setCurrentBalance(Number(evmBalance?.formatted || 0));
     }
   }, [selectedCoin, evmBalance]);
 
